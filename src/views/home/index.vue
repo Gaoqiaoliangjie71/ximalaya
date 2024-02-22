@@ -11,7 +11,7 @@ export default {
 <script lang="ts" setup>
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .container {
   height: 100%;
   width: 100%;
