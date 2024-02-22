@@ -6,6 +6,7 @@
 export {}
 
 declare module 'vue' {
+<<<<<<< HEAD
   export interface GlobalComponents {
     Heaader: typeof import('./src/components/heaader/index.vue')['default']
     Listens: typeof import('./src/components/listens/index.vue')['default']
@@ -16,3 +17,13 @@ declare module 'vue' {
     VanSwipeItem: typeof import('vant/es')['SwipeItem']
   }
 }
+=======
+  export interface GlobalComponents {
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
+    VanSearch: typeof import('vant/es')['Search']
+    VanTab: typeof import('vant/es')['Tab']
+    VanTabs: typeof import('vant/es')['Tabs']
+  }
+}
+>>>>>>> develop
