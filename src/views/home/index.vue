@@ -1,4 +1,6 @@
-<template></template>
+<template>
+  <div class="container">首页</div>
+</template>
 
 <script lang="ts">
 export default {
@@ -9,4 +11,10 @@ export default {
 <script lang="ts" setup>
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.container {
+  height: 100%;
+  width: 100%;
+  border: 1px solid red;
+}
+</style>

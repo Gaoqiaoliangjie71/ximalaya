@@ -15,5 +15,16 @@ export default defineConfig({
     alias: {
       '@': path.resolve('./src'),
     },
+  },
+  server: {
+    //代理
+    proxy: {
+      '/api': {
+        target: 'https://m.ximalaya.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      }
+    }
   }
+
 });
