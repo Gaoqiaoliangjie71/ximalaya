@@ -86,6 +86,30 @@
       <!-- 倒计时 -->
       <div class="timeLimit">{{ countdownDisplay }}</div>
     </div>
+    <div class="time-list">
+      <!-- 限时免费轮播图 -->
+      <van-swipe :loop="false" indicator-color="transparent" :width="125">
+        <van-swipe-item>
+          <Listens></Listens>
+        </van-swipe-item>
+        <van-swipe-item>
+          <Listens></Listens>
+        </van-swipe-item>
+        <van-swipe-item>
+          <Listens></Listens>
+        </van-swipe-item>
+        <van-swipe-item>
+          <Listens></Listens>
+        </van-swipe-item>
+        <van-swipe-item>
+          <Listens></Listens>
+        </van-swipe-item>
+      </van-swipe>
+    </div>
+
+    <!-- 今日热点 -->
+    <div class="listens-title">今日热点</div>
+    <div class="hot"></div>
   </div>
 </template>
 
@@ -98,19 +122,21 @@ export default {
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 // 倒计时
-const endTime = new Date("2024-02-24 09:00:00").getTime();//倒计时结束时间
-const countdown = ref(Math.round((endTime - Date.now()) / 1000));//初始化剩余时间
+const endTime = new Date("2024-02-23 17:00:00").getTime(); //倒计时结束时间
+const countdown = ref(Math.round((endTime - Date.now()) / 1000)); //初始化剩余时间
 onMounted(() => {
   setInterval(() => {
-    //算出秒数    
-    countdown.value = (endTime - Date.now()) / 1000; 
-  }, 250);
+    //算出秒数
+    countdown.value = (endTime - Date.now()) / 1000;
+  }, 1000);
 });
 const countdownDisplay = computed(() => {
-  const hours = Math.floor(countdown.value % 86400 / 3600);
-  const minutes = Math.floor((countdown.value % 86400 % 3600) / 60);
-  const seconds = Math.floor(countdown.value %  60);
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  const hours = Math.floor((countdown.value % 86400) / 3600);
+  const minutes = Math.floor(((countdown.value % 86400) % 3600) / 60);
+  const seconds = Math.floor(countdown.value % 60);
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 });
 </script>
 
@@ -222,5 +248,7 @@ const countdownDisplay = computed(() => {
       background-color: #fa2800;
     }
   }
+
+
 }
 </style>
