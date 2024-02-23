@@ -22,7 +22,7 @@ export default defineConfig({
       '/api': {
         target: 'https://m.ximalaya.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/app-dev/, ''),
       }
     }
   }
