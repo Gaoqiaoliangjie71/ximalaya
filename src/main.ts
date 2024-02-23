@@ -8,6 +8,7 @@ import ElementPlus from 'element-plus';
 import Vant from 'vant';
 import 'element-plus/dist/index.css';
 
+
 //头部组件
 import Header from './components/heaader/index.vue'
 //新人必听组件
@@ -25,9 +26,5 @@ app.component('Listens',Listens)
 
 app.use(pinia);
 app.use(router);
-<<<<<<< HEAD
 app.use(Vant);
-=======
-
->>>>>>> 943b22c3c807344730058bedb509b896137e724b
 app.mount('#app');
