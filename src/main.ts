@@ -2,15 +2,10 @@ import 'amfe-flexible'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia';
 import router from './router';
-// import './style.css';
 import App from './App.vue'
 import ElementPlus from 'element-plus';
 import Vant from 'vant';
 import 'element-plus/dist/index.css';
-<<<<<<< HEAD
-// import './style.css';
-=======
->>>>>>> e4f47490609e32e5ef51c5f2018b3dce3832428b
 
 
 //头部组件
