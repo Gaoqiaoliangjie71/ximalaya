@@ -6,7 +6,7 @@ const router = createRouter({
   routes: staticRoutes,
   scrollBehavior() {
     return { top: 0, left: 0 }
-  },
+  }
 })
 
 // 导出路由
