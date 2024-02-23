@@ -30,7 +30,7 @@
                         class="arrow arrow-bottom"></span></div><input name="accountName" id="accountName" type="text"
                       autocomplete="username" class="phone-input__input" role="phone-num" placeholder="手机号或邮箱" value="">
                     <div role="sub-menu" class="phone-input__list">
-                      <ul>
+                      <!-- <ul>
                         <li role="option">中国<span class="fr" style="padding-right: 24px;">+86</span></li>
                         <li role="option">中国台湾<span class="fr" style="padding-right: 24px;">+886</span></li>
                         <li role="option">中国香港<span class="fr" style="padding-right: 24px;">+852</span></li>
@@ -278,7 +278,7 @@
                       <li role="option">美国本土外小岛屿<span class="fr" style="padding-right: 24px;">+1</span></li>
                       <li role="option">关塔那摩湾<span class="fr" style="padding-right: 24px;">+1</span></li>
                       <li role="option">阿克罗蒂里<span class="fr" style="padding-right: 24px;">+357</span></li>
-                    </ul>
+                    </ul> -->
                   </div>
                 </div><label class="error-tip">请输入手机号</label>
               </div>
@@ -338,5 +338,30 @@ export default {
     }
 
   }
+
+  .xui-modal {
+    font-family: -apple-system,BlinkMacSystemFont,PingFangSC-Regular,"PingFang SC","Microsoft YaHei","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    width: 590px;
+    margin: 0 auto;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    background-color: #fff;
+    border: 0;
+    border-top: 4px solid #fc9d77;
+    -o-border-image: -o-linear-gradient(left,#f86442,#fc9d77) 2;
+    border-image: -webkit-gradient(linear,left top,right top,from(#f86442),to(#fc9d77)) 2;
+    border-image: linear-gradient(to right,#f86442,#fc9d77) 2;
+}
 
 }</style>
