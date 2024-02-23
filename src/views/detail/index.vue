@@ -2,6 +2,8 @@
   <div class="detail">
     <div class="header">头部</div>
     <div class="content">
+
+    <!-- 第一个页面 -->
       <div class="desc">
         <div class="top">
           <div class="left">
@@ -29,7 +31,6 @@
             </div>
           </div>
         </div>
-
         <div class="middle" :style="{ 'height': isTextShow ? 'auto' : '100px' }">
           <div class="text" v-html="str"></div>
           <div class="transparent"></div>
@@ -37,11 +38,14 @@
             <van-icon name="arrow-double-right" color="red" class="rotate-90"/>
           </div>
         </div>
-
         <div class="btn">
           <div class="actionBtn">打开APP,完整收听</div>
         </div>
       </div>
+
+
+    <!-- 第二个页面 -->
+      <div class="courseList"></div>
     </div>
     <div class="footer"></div>
   </div>
@@ -54,7 +58,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-// import tradeApi, { type TrademarkData } from '@/api/trademark'
+// import detailApi, { type TrademarkData } from '@/api/detail'
 // import { ElMessage } from 'element-plus';
 // import { Plus } from '@element-plus/icons-vue'
 // import type { UploadProps } from 'element-plus'
@@ -87,6 +91,7 @@ onMounted(() => {
     padding: 10px;
     box-sizing: border-box;
 
+    // 第一个页面
     .desc {
       .top {
         display: flex;
@@ -162,7 +167,7 @@ onMounted(() => {
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 25px;
+        bottom: 40px;
         height: 60px;
         background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
       }
@@ -222,5 +227,7 @@ onMounted(() => {
       }
 
     }
+
+
   }
 }</style>
