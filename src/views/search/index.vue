@@ -4,9 +4,12 @@
       <van-search v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" />
     </form>
     <van-tabs v-model:active="active">
-      <van-tab v-for="index in 7" :title="'选项 ' + index">
-        内容 {{ index }}
-      </van-tab>
+      <div class="wrapper">
+        <van-tab v-for="(item, index) in categoryList" :key="item.categoryId" :title="item.categoryName">
+          内容{{ index + 1 }}
+        </van-tab>
+      </div>
+
     </van-tabs>
   </div>
 </template>
@@ -19,10 +22,18 @@ export default {
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { showToast } from 'vant';
+import BetterScroll from 'better-scroll'
+
 import searchApi from '@/api/search'
+
 
 onMounted(() => {
   getHotWord()
+  //better-scroll
+  new BetterScroll('.wrapper', {
+    movable: true,
+    zoom: true
+  })
 })
 const active = ref(0);
 const value = ref('')
@@ -41,9 +52,7 @@ const categoryList = ref([])
 //获取热词的函数
 function getHotWord() {
   try {
-    console.log(123);
     searchApi.findHotWord().then((result: any) => {
-      console.log(result.category);
       categoryList.value = result.category
     })
 
@@ -61,4 +70,17 @@ function getHotWord() {
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .van-tab--active {
+  font-size: 20px;
+}
+
+::v-deep .van-tab--grow {
+  height: 40px;
+  line-height: 16px;
+}
+
+::v-deep .van-tabs__line {
+  background-color: red;
+}
+</style>
