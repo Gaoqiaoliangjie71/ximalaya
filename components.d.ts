@@ -11,5 +11,8 @@ declare module 'vue' {
     Listens: typeof import('./src/components/listens/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanIcon: typeof import('vant/es')['Icon']
+    VanSwipe: typeof import('vant/es')['Swipe']
+    VanSwipeItem: typeof import('vant/es')['SwipeItem']
   }
 }

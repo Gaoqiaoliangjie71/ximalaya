@@ -98,7 +98,7 @@ export default {
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 // 倒计时
-const endTime = new Date("2024-02-23 09:00:00").getTime();//倒计时结束时间
+const endTime = new Date("2024-02-24 09:00:00").getTime();//倒计时结束时间
 const countdown = ref(Math.round((endTime - Date.now()) / 1000));//初始化剩余时间
 onMounted(() => {
   setInterval(() => {
@@ -189,6 +189,7 @@ const countdownDisplay = computed(() => {
     }
   }
 
+  //头部样式
   .listens-title {
     font-size: 18px;
     color: #40404c;
@@ -214,6 +215,9 @@ const countdownDisplay = computed(() => {
     .timeLimit {
       width: 96px;
       height: 25px;
+      font-size: 20px;
+      line-height: 25px;
+      text-align: center;
       margin: 17px 0 17px 5px;
       background-color: #fa2800;
     }
