@@ -58,7 +58,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-// import tradeApi, { type TrademarkData } from '@/api/detail'
+// import detailApi, { type TrademarkData } from '@/api/detail'
 // import { ElMessage } from 'element-plus';
 // import { Plus } from '@element-plus/icons-vue'
 // import type { UploadProps } from 'element-plus'
