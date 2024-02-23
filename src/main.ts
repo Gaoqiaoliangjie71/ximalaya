@@ -25,5 +25,9 @@ app.component('Listens',Listens)
 
 app.use(pinia);
 app.use(router);
+<<<<<<< HEAD
 app.use(Vant);
+=======
+
+>>>>>>> 943b22c3c807344730058bedb509b896137e724b
 app.mount('#app');
