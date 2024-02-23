@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <div class="xiala">
+    <!-- 下拉组件测试 -->
+    <!-- <div class="xiala">
       <van-collapse v-model="activeNames">
         <div>
           <van-collapse-item title="" name="1">
@@ -8,12 +9,25 @@
           </van-collapse-item>
         </div>
       </van-collapse>
-    </div>
+    </div> -->
+    <!-- 导航标签页 -->
     <van-tabs v-model:active="active">
       <van-tab title="标签 1">
+        <!-- card列表 -->
         <div class="categoryList">
+          <!-- card -->
           <div class="categoryItem">
             <img src="./Snipaste_2024-02-22_18-17-29.png" alt="" />
+            <div class="article-description">
+              <div class="title">畅销书上新推荐第10期，这些新书值得听</div>
+              <div class="data-message">
+                <div class="play-message">
+                  <van-icon name="play-circle-o" />
+                  <div class="play-counts">34</div>
+                </div>
+                <div class="update-time">2035-2-43更新</div>
+              </div>
+            </div>
           </div>
         </div>
       </van-tab>
