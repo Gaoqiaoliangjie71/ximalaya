@@ -42,7 +42,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { SidebarProps, SidebarItemProps } from "vant";
+// import type { SidebarProps, SidebarItemProps } from "vant";
 
 const active = ref(0);
 const actt = ref(0);
