@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <template>
   <div class="container">
     <!-- 下拉组件测试 -->
@@ -77,18 +76,3 @@ const activeNames = ref(["1"]);
   }
 }
 </style>
-=======
-<template>
-  11
-  <div class="listen">listen</div>
-</template>
-
-<script lang="ts">
-export default {
-  name: 'Home',
-};
-</script>
-<script lang="ts" setup></script>
-
-<style lang="scss" scoped></style>
->>>>>>> 00950248c3ca5eeea988f3702748c6738fee81db
