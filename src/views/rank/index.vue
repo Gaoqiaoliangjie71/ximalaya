@@ -37,12 +37,7 @@
 
 <script lang="ts">
 export default {
-<<<<<<< HEAD
-  name: 'Home',
-
-=======
   name: "Rank",
->>>>>>> e4f47490609e32e5ef51c5f2018b3dce3832428b
 };
 </script>
 <script lang="ts" setup>
