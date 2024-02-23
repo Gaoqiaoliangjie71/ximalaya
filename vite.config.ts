@@ -19,7 +19,7 @@ export default defineConfig({
   server: {
     //代理
     proxy: {
-      '/api': {
+      '/app-dev': {
         target: 'https://m.ximalaya.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/app-dev/, ''),

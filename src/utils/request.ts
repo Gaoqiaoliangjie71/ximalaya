@@ -2,13 +2,6 @@ import axios, { type AxiosRequestHeaders, type AxiosResponse } from 'axios';
 import { ElMessage, } from 'element-plus';
 
 
-/* 定义response对象的data接口 */
-interface ResponseData<T> {
-  code: number;
-  data: T;
-  message: string;
-}
-
 // 配置新建一个 axios 实例
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -28,14 +21,10 @@ service.interceptors.request.use(
 // 添加响应拦截器
 service.interceptors.response.use(
   /* 约束一下response */
-  async (response: AxiosResponse<ResponseData<any>>) => {
+  async (response: AxiosResponse<any>) => {
     // 对响应数据做点什么
     const res = response.data;
-    if (res.code !== 20000 && res.code !== 200) { /* 成功数据的code值为20000/200 */
-      return Promise.reject(service.interceptors.response);
-    } else {
-      return res.data; /* 返回成功响应数据中的data属性数据 */
-    }
+    return res; /* 返回成功响应数据中的data属性数据 */
   },
   (error) => {
     // 对响应错误做点什么
