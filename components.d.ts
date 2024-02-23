@@ -11,8 +11,15 @@ declare module 'vue' {
     Listens: typeof import('./src/components/listens/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanCell: typeof import('vant/es')['Cell']
     VanIcon: typeof import('vant/es')['Icon']
+    VanImage: typeof import('vant/es')['Image']
+    VanList: typeof import('vant/es')['List']
+    VanPullRefresh: typeof import('vant/es')['PullRefresh']
+    VanSearch: typeof import('vant/es')['Search']
     VanSwipe: typeof import('vant/es')['Swipe']
     VanSwipeItem: typeof import('vant/es')['SwipeItem']
+    VanTab: typeof import('vant/es')['Tab']
+    VanTabs: typeof import('vant/es')['Tabs']
   }
 }
