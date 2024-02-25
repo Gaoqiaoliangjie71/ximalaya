@@ -42,7 +42,11 @@ export const staticRoutes: Array<RouteRecordRaw> = [
   },
   {
     path: '/category',
-    component: () => import('@/views/category/index.vue'),
+    component: () => import('@/views/category/index.vue')
+  },
+  {
+    path: '/category/list/:id',
+    component: () => import('@/views/category/list/index.vue'),
   },
   {
     path: '/listen',

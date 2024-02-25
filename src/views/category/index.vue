@@ -14,7 +14,7 @@
       <div class="right" @scroll="getScroll" ref="rightScroll">
         <div ref="rightItem" class="right-item" v-for="item in category1List" :key="item.id">
           <!-- 右侧小标题 -->
-          <van-cell :title="item.title" is-link to="index" />
+          <van-cell :title="item.title" is-link to="index" @click="toList(item.id)"/>
           <!-- 小标题下的内容 -->
           <div class="item-content">
             <div class="item" v-for="info in item.subCategories[0]?.metadataValues" :key="info.id">{{ info.name }}</div>
@@ -33,11 +33,10 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import categoryApi from '@/api/category'
 import type { category1ListData } from '@/api/category'
-import { nextTick } from 'vue';
-
+import router from '@/router/index.ts'
 
 // 右侧每一项小标题和内容的div(数组)
 const rightItem = ref()
@@ -128,8 +127,6 @@ function setShow(index: number) {
 
 // 右侧滚动的回调函数
 function getScroll() {
-  console.log(123);
-
   rightItem.value.forEach((item: any, index: number) => {
 
     if (item.getBoundingClientRect().top < 100 && item.getBoundingClientRect().top > 0) {
@@ -146,6 +143,11 @@ function getScroll() {
 
     }
   })
+}
+
+//跳转列表页
+function toList(id : number){
+  router.push(`/category/list/${id}`)
 }
 
 
@@ -243,7 +245,6 @@ function getScroll() {
   text-align: center;
   font-size: 14px;
   color: #7e8c8d;
-
 }
 
 .active {
