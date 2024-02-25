@@ -16,7 +16,7 @@
           </div>
           <div class="wan" v-if="type">
             <van-icon name="audio" />
-            10.81万
+            {{ item && item.playCount }}
           </div>
         </div>
       </div>
