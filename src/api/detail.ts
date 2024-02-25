@@ -14,7 +14,8 @@ interface DetailInfo {
     "albumWrap": {
       "title": string,
       "coverPath": string
-    }
+    },
+    "anchorId"?:number,
   },
   "statCountInfo": {
     "subscribeCount": number,
@@ -36,6 +37,10 @@ export type ListData = {
 interface ItemInfo {
   "trackInfo": {
     "title": string,
+    "duration":number
+  }
+  "statCountInfo": {
+    "playCount": number,
   }
 }
 export type CommentData = {
@@ -47,6 +52,7 @@ export interface ComItemInfo {
   "smallHeader": string,
   "content":string,
   "createdAt": number,
+  "likes":number,
 }
 export type AuthWorkData={
   "albumBriefDetailInfos":AuthWorkItemInfo[]
@@ -84,10 +90,11 @@ export interface LikeWorkItemInfo {
 export default {
   findCourseDesc: (id = 9723091) => request.get<any, DescData>(`/m-revision/page/album/v2/queryAlbumPage/${id}`),
   findAuth: (anchorId = 1000202) => request.get<any, AuthData>(`/m-revision/common/user/queryUserInfo/${anchorId}?userCountKeys=follower`),
-  findCourseList: (flag: boolean) => request.get<any, ListData>(`/m-revision/common/album/queryAlbumTrackRecordsByPage?albumId=9723091&page=1&pageSize=10&asc=${flag}&countKeys=play%2Ccomment&v=1692018651710`),
+  findCourseList: ({flag=true,albumId=9723091,page=1,pageSize=10}) => request.get<any, ListData>(`/m-revision/common/album/queryAlbumTrackRecordsByPage?albumId=${albumId}&page=${page}&pageSize=${pageSize}&asc=${flag}&countKeys=play%2Ccomment&v=1692018651710`),
   findComment: ({ page = 1, pageSize = 10, albumId = 9723091, v=1692064693595}) =>
     request.get<any, CommentData>(`/m-revision/common/album/queryAlbumCommentsByPage?page=${page}&pageSize=${pageSize}&albumId=${albumId}&v=${v}`),
-  // 作者作品
+  
+    // 作者作品
   findAuthWork:({anchorId=1000202,page=1,pageSize=3,asc=false})=>
     request.get<any, AuthWorkData>(`/m-revision/common/anchor/queryAnchorAlbumsByPage?anchorId=${anchorId}&page=${page}&pageSize=${pageSize}&asc=${asc}`),
   // 相似专辑

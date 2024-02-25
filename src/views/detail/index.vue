@@ -1,8 +1,23 @@
 <template>
   <div class="detail">
     <Header></Header>
-    <div class="content">
 
+    <!-- 加载时显示的骨架屏 -->
+    <van-skeleton v-if="!auth.userInfo.logo">
+      <template #template>
+        <div :style="{ display: 'flex', width: '100%' }">
+          <van-skeleton-image />
+          <div :style="{ flex: 1, marginLeft: '16px' }">
+            <van-skeleton-paragraph row-width="60%" />
+            <van-skeleton-paragraph />
+            <van-skeleton-paragraph />
+            <van-skeleton-paragraph />
+          </div>
+        </div>
+      </template>
+    </van-skeleton>
+
+    <div v-else class="content">
       <!-- 第一个页面,作品介绍 -->
       <div class="desc">
         <div class="top">
@@ -18,7 +33,10 @@
             <div class="count grey">
               <span class="watch">
                 <van-icon name="play-circle-o" />
-                <span class="num">{{ (descInfo.albumDetailInfo.statCountInfo.playCount / 100000000).toFixed(2) }} 亿</span>
+                <span class="num">
+                  {{descInfo.albumDetailInfo.statCountInfo.playCount > 100000000 ? (descInfo.albumDetailInfo.statCountInfo.playCount / 100000000).toFixed(2) :
+                  (descInfo.albumDetailInfo.statCountInfo.playCount /10000).toFixed(2) }} 
+                  {{ descInfo.albumDetailInfo.statCountInfo.playCount > 100000000 ? "亿" : "万" }}</span>
               </span>
               <span class="watch">
                 <van-icon name="certificate" />
@@ -54,8 +72,11 @@
           <div class="leftMiddle">
             <div class="titleMiddle">{{ item.trackInfo.title }}</div>
             <div class="descMiddle grey">
-              <span><van-icon name="play-circle-o" /> 9744.94万</span>
-              <span><van-icon name="clock-o" /> 22:57</span>
+              <span><van-icon name="play-circle-o" /> 
+                {{ item.statCountInfo.playCount > 100000000 ? (item.statCountInfo.playCount / 100000000).toFixed(2) :
+                  (item.statCountInfo.playCount / 10000).toFixed(2) }} {{ item.statCountInfo.playCount > 100000000 ? "亿" : "万" }}
+              </span>
+              <span><van-icon name="clock-o" />{{ String(Math.floor(item.trackInfo.duration/60)).padStart(2, '0') }}:{{ String(item.trackInfo.duration % 60).padStart(2, '0') }}</span>
             </div>
           </div>
           <div class="rightMiddle">
@@ -105,7 +126,7 @@
                   <span> {{ makeData(item.createdAt) }}</span>
                 </div>
                 <div class="bomRight">
-                  <span>976 </span>
+                  <span>{{item.likes}} </span>
                   <van-icon name="good-job-o" />
                 </div>
               </div>
@@ -145,7 +166,7 @@
 
       <!-- 换一批 -->
       <div class="refresh">
-        <van-button class="refreshBtn" type="danger" round>
+        <van-button class="refreshBtn" type="danger" round @click="changeHandler">
           <van-icon name="replay" />
           换一批
         </van-button>
@@ -183,18 +204,16 @@
         <div class="localBtn">APP内打开</div>
       </div>
     </div>
-
-     <!-- 底部 -->
-     <div class="footer">
-        <img class="bg-img"
-          src="https://imagev2.xmcdn.com/storages/2165-audiofreehighqps/52/6D/GKwRIDoF6Ml9AAESnAEaI6xF.png!magick=webp">
-        <img
-          class="footer-logo"
-          src="https://imagev2.xmcdn.com/storages/3777-audiofreehighqps/49/07/GMCoOSMH3Kb7AAAPQgH_va2X.png!magick=webp">
-        <div class="copyright grey">
-          <p>© 2014-<!-- -->2024<!-- --> 喜马拉雅 版权所有</p>
-        </div>
+    <!-- 底部 -->
+    <div class="footer">
+      <img class="bg-img"
+        src="https://imagev2.xmcdn.com/storages/2165-audiofreehighqps/52/6D/GKwRIDoF6Ml9AAESnAEaI6xF.png!magick=webp">
+      <img class="footer-logo"
+        src="https://imagev2.xmcdn.com/storages/3777-audiofreehighqps/49/07/GMCoOSMH3Kb7AAAPQgH_va2X.png!magick=webp">
+      <div class="copyright grey">
+        <p>© 2014-<!-- -->2024<!-- --> 喜马拉雅 版权所有</p>
       </div>
+    </div>
   </div>
 </template>
 
@@ -207,6 +226,11 @@ export default {
 import { ref, onMounted, onUnmounted } from 'vue'
 import detailApi, { AuthData, AuthWorkItemInfo, ComItemInfo, LikeWorkItemInfo, SameWorkItemInfo } from '../../api/detail'
 import { DescData } from '../../api/detail';
+import router from "../../router/index";
+
+const id=parseInt(router.currentRoute.value.params.id as any)
+let anchorId=0
+let title=''
 
 // 第一个页面
 const str = ref("")
@@ -231,9 +255,15 @@ const descInfo = ref<DescData>(
   })
 const getDesc = async () => {
   try {
-    const res = await detailApi.findCourseDesc()
+    const res = await detailApi.findCourseDesc(id)
     descInfo.value = res.data
+    anchorId=res.data.albumDetailInfo.albumInfo.anchorId
+    title=res.data.albumDetailInfo.albumInfo.title
     str.value = descInfo.value.albumRichInfo.richIntro.replace('\"', '"')
+  
+    getAuth()
+    getAuthWork({anchorId})
+    getSameWork({kw:title})
   } catch (error) {
     console.log("获取介绍信息失败");
   }
@@ -246,7 +276,7 @@ const auth = ref<AuthData>({
 })
 const getAuth = async () => {
   try {
-    const res = await detailApi.findAuth()
+    const res = await detailApi.findAuth(anchorId)
     auth.value = res.data
   } catch (error) {
     console.log("获取介绍信息失败");
@@ -256,9 +286,9 @@ const getAuth = async () => {
 const flag = ref(true)
 const totalCount = ref()
 const courseList = ref()
-const getList = async () => {
+const getList = async (obj:{flag:boolean,albumId:number,page?:number,pageSize?:number}) => {
   try {
-    const res = await detailApi.findCourseList(flag.value)
+    const res = await detailApi.findCourseList(obj)
     totalCount.value = res.data.totalCount
     courseList.value = res.data.trackDetailInfos
   } catch (error) {
@@ -267,14 +297,14 @@ const getList = async () => {
 }
 const sortHandle = () => {
   flag.value = !flag.value
-  getList()
+  getList({flag:flag.value,albumId:id})
 }
 // 第三个页面，评价
 const isComShow = ref(false)
 const commentList = ref<ComItemInfo[]>()
 const getComment = async () => {
   try {
-    const res = await detailApi.findComment({})
+    const res = await detailApi.findComment({albumId :id})
     commentList.value = res.data.comments
   } catch (error) {
     console.log("获取介绍信息失败");
@@ -312,27 +342,31 @@ const scrolling = () => {
 const baseurl = ref('https://imagev2.xmcdn.com/');
 const albumBriefDetailInfos = ref<AuthWorkItemInfo[]>([]);
 // 作者作品
-const getAuthWork = async () => {
+const getAuthWork = async (obj:{anchorId:number,page?:number,pageSize?:number,asc?:boolean}) => {
   try {
-    const res = await detailApi.findAuthWork({})
+    const res = await detailApi.findAuthWork(obj)
     albumBriefDetailInfos.value = res.data.albumBriefDetailInfos
   } catch (error) {
     console.log("获取介绍信息失败");
   }
 }
 
-
+const page = ref<number>(1)
 const sameWorkList = ref<SameWorkItemInfo[]>([])
 // 相似作品
-const getSameWork = async () => {
+const getSameWork = async (obj:{kw:string,page?:number,rows?:number,device?:string,condition?:string,spellchecker?:boolean,core?:string}) => {
   try {
-    const res = await detailApi.findSameWork({})
+    const res = await detailApi.findSameWork(obj)
     sameWorkList.value = res.data.album.docs
   } catch (error) {
     console.log("获取介绍信息失败");
   }
 }
-
+const changeHandler = () => {
+  page.value = page.value + 1
+  console.log(page.value);
+  getSameWork({ page: page.value,kw:title})
+}
 // 猜你喜欢
 const likeList = ref<LikeWorkItemInfo[]>([])
 const getGuessLike = async () => {
@@ -346,13 +380,11 @@ const getGuessLike = async () => {
 // 挂载请求数据
 onMounted(async () => {
   getDesc()
-  getAuth()
-  getList()
+  getList({flag:flag.value,albumId:id})
   getComment()
   window.addEventListener("scroll", scrolling);
-  getAuthWork()
-  getSameWork()
   getGuessLike()
+  
 })
 onUnmounted(() => {
   window.removeEventListener("scroll", scrolling);
@@ -449,6 +481,7 @@ onUnmounted(() => {
         font-size: 14px !important;
         line-height: 21px !important;
         margin: 0;
+        width: 100%;
       }
 
       .transparent {
@@ -906,27 +939,30 @@ onUnmounted(() => {
     }
   }
 
-  .footer{
+  .footer {
     position: relative;
-    width:375px;
-    height:160px;
+    width: 375px;
+    height: 160px;
     text-align: center;
-    .bg-img{
-      width:100%;
-      height:180px;
+
+    .bg-img {
+      width: 100%;
+      height: 180px;
       position: absolute;
-      bottom:0;
-      left:0;
-      right:0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       z-index: -1;
     }
-    .footer-logo{
-      width:120px;
+
+    .footer-logo {
+      width: 120px;
       margin: 20px auto 0;
     }
-    .copyright{
+
+    .copyright {
       font-size: 12px;
-      width:100%;
+      width: 100%;
       padding: 0;
     }
   }
