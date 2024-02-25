@@ -8,8 +8,9 @@ import ElementPlus from 'element-plus';
 import Vant from 'vant';
 import 'element-plus/dist/index.css';
 
+import Vant from 'vant';
 //头部组件
-import Header from './components/heaader/index.vue'
+import Header from './components/header/index.vue'
 //新人必听组件
 import Listens from './components/listens/index.vue'
 //今日热点
