@@ -249,7 +249,7 @@ const toOpen = () => {
   router.push({ path: "/open" })
 }
 const toDetail = (newId: number) => {
-  router.replace({ path: `/detail/${newId}` })
+  router.push({ path: `/detail/${newId}` })
 }
 let anchorId = 0
 let title = ''

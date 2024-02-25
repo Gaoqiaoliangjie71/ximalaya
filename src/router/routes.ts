@@ -53,10 +53,12 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/login/index.vue'),
   },
   {
+    // 跳转时传入作品id（albumId/id）
     path: '/detail/:id',
     component: () => import('@/views/detail/index.vue'),
   },
   {
+    // 打开APP跳出的页面
     path: '/open',
     component: () => import('@/views/open/index.vue'),
   },
