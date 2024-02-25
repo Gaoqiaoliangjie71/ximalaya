@@ -1,6 +1,6 @@
 <template>
   <div class="detail">
-    <div class="header">头部</div>
+    <Header></Header>
     <div class="content">
 
       <!-- 第一个页面,作品介绍 -->
@@ -67,6 +67,24 @@
           <van-icon name="arrow-down" />
         </div>
       </div>
+      <!-- 主播作品 -->
+      <div class="comment">
+        <div class="comTitle">
+          主播作品
+        </div>
+        <div class="album">
+          <div class="album-item" v-for="(item, index) in albumBriefDetailInfos" :key="index">
+            <img class="top" :src="baseurl + item.albumInfo.cover">
+            <p class="center">
+            <div class="care">
+              <van-icon name="play" />
+            </div>
+            <div class="text"> {{ (item.statCountInfo.playCount / 10000).toFixed(2) }}万 </div>
+            </p>
+            <p class="bottom">{{ item.albumInfo.title }}</p>
+          </div>
+        </div>
+      </div>
 
       <!-- 第三个页面，评价信息 -->
       <div class="comment">
@@ -105,13 +123,78 @@
         </div>
       </div>
 
+      <!-- 相似专辑 -->
+      <div class="comment">
+        <div class="comTitle">
+          相似专辑
+        </div>
+        <div class="album-ver">
+          <div class="album-item" v-for="(item, index) in sameWorkList" :key="index">
+            <img class="top" :src="`https://imagev2.xmcdn.com/${item.coverPath}`">
+            <p class="center">
+            <div class="care">
+              <van-icon name="play" />
+            </div>
+            <div class="text"> {{ (item.playCount / 10000).toFixed(2) }}
+              万</div>
+            </p>
+            <p class="bottom">{{ item.title }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 换一批 -->
+      <div class="refresh">
+        <van-button class="refreshBtn" type="danger" round>
+          <van-icon name="replay" />
+          换一批
+        </van-button>
+      </div>
+      <!-- 猜你喜欢 -->
+      <div class="hotspot">
+        <div class="hot">猜你喜欢</div>
+        <div class="item" v-for="item in likeList" :key="item.albumId">
+          <div class="img">
+            <img :src="`https://imagev2.xmcdn.com/${item.albumCoverPath}`" alt="">
+            <div class="caret">
+              <van-icon name="play" />
+            </div>
+          </div>
+          <div class="right">
+            <h4>{{ item.albumTitle }}</h4>
+            <div class="descMiddle">{{ item.intro }}</div>
+            <div class="decsBottom">
+              <span>
+                <van-icon name="manager-o" />
+                <span>{{ item.albumUserNickName }}</span>
+              </span>
+              <span>
+                <van-icon name="service" />
+                <span>{{ item.albumPlayCount > 100000000 ? (item.albumPlayCount / 100000000).toFixed(2) :
+                  (item.albumPlayCount /
+                    10000).toFixed(2) }} {{ item.albumPlayCount > 100000000 ? "亿" : "万" }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="btn" v-show="localBtnShow">
         <div class="localBtn">APP内打开</div>
       </div>
     </div>
 
-    <div class="footer"></div>
+     <!-- 底部 -->
+     <div class="footer">
+        <img class="bg-img"
+          src="https://imagev2.xmcdn.com/storages/2165-audiofreehighqps/52/6D/GKwRIDoF6Ml9AAESnAEaI6xF.png!magick=webp">
+        <img
+          class="footer-logo"
+          src="https://imagev2.xmcdn.com/storages/3777-audiofreehighqps/49/07/GMCoOSMH3Kb7AAAPQgH_va2X.png!magick=webp">
+        <div class="copyright grey">
+          <p>© 2014-<!-- -->2024<!-- --> 喜马拉雅 版权所有</p>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -121,8 +204,8 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref,reactive, onMounted,onUnmounted } from 'vue'
-import detailApi, { AuthData, ComItemInfo } from '../../api/detail'
+import { ref, onMounted, onUnmounted } from 'vue'
+import detailApi, { AuthData, AuthWorkItemInfo, ComItemInfo, LikeWorkItemInfo, SameWorkItemInfo } from '../../api/detail'
 import { DescData } from '../../api/detail';
 
 // 第一个页面
@@ -213,46 +296,49 @@ const makeData = (time: number) => {
 }
 
 // 固定定位的按钮是否展示
-const localBtnShow=ref(false)
-const scrolling=()=>{
-    // 滚动条距文档顶部的距离
-    let scrollTop =window.pageYOffset ||document.documentElement.scrollTop ||document.body.scrollTop;
-    // console.log("header 滚动距离 ", );
-    if (scrollTop>600) {
-      localBtnShow.value=true
-    }else{
-      localBtnShow.value=false
-    }
-    
+const localBtnShow = ref(false)
+const scrolling = () => {
+  // 滚动条距文档顶部的距离
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  // console.log("header 滚动距离 ", );
+  if (scrollTop > 600) {
+    localBtnShow.value = true
+  } else {
+    localBtnShow.value = false
+  }
+
 };
- 
+
+const baseurl = ref('https://imagev2.xmcdn.com/');
+const albumBriefDetailInfos = ref<AuthWorkItemInfo[]>([]);
 // 作者作品
 const getAuthWork = async () => {
   try {
     const res = await detailApi.findAuthWork({})
-    console.log("作者作品") 
-    console.log(res.data);
-    
+    albumBriefDetailInfos.value = res.data.albumBriefDetailInfos
   } catch (error) {
     console.log("获取介绍信息失败");
   }
 }
-// 相似
+
+
+const sameWorkList = ref<SameWorkItemInfo[]>([])
+// 相似作品
 const getSameWork = async () => {
   try {
     const res = await detailApi.findSameWork({})
-    console.log("相似作品") 
-    console.log(res.data);
+    sameWorkList.value = res.data.album.docs
   } catch (error) {
     console.log("获取介绍信息失败");
   }
 }
+
 // 猜你喜欢
+const likeList = ref<LikeWorkItemInfo[]>([])
 const getGuessLike = async () => {
   try {
     const res = await detailApi.findLike({})
-    console.log("猜你喜欢")
-    console.log(res.data); 
+    likeList.value = res.data.albums
   } catch (error) {
     console.log("获取介绍信息失败");
   }
@@ -268,8 +354,8 @@ onMounted(async () => {
   getSameWork()
   getGuessLike()
 })
-onUnmounted(()=>{
-    window.removeEventListener("scroll", scrolling);
+onUnmounted(() => {
+  window.removeEventListener("scroll", scrolling);
 })
 
 </script>
@@ -279,12 +365,6 @@ onUnmounted(()=>{
   width: 100%;
   height: 100%;
   font-size: 14px;
-
-  .header {
-    height: 50px;
-    padding: 15px 15px 5px 15px;
-    background-color: pink;
-  }
 
   .content {
     width: 100%;
@@ -527,7 +607,7 @@ onUnmounted(()=>{
         overflow: hidden;
 
         li {
-          margin-top: 28px;
+          margin-top: 10px;
           display: flex;
         }
 
@@ -610,6 +690,244 @@ onUnmounted(()=>{
         line-height: 50px;
         margin-top: 10px;
       }
+    }
+
+    .album {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+
+      .album-item {
+        width: 103.5px;
+        position: relative;
+        margin-bottom: 5px;
+
+        .top {
+          width: 103.5px;
+          height: 103.5px;
+          border-radius: 3%;
+        }
+
+        .center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 73px;
+
+          .care {
+            width: 15px;
+            height: 15px;
+            line-height: 15px;
+            text-align: center;
+            background-color: #62626477;
+            border-radius: 50%;
+            overflow: hidden;
+            padding-right: 2px;
+            margin-right: 5px;
+            margin-left: 3px;
+            color: #fff;
+
+          }
+
+          .text {
+            color: rgb(255, 255, 255);
+            font-weight: 700;
+            font-size: 12px;
+          }
+        }
+
+        .bottom {
+          overflow: hidden;
+          display: -ms-flexbox;
+          display: flex;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .album-ver {
+
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      .album-item {
+        width: 103.5px;
+        position: relative;
+        margin-bottom: 5px;
+
+        .top {
+          width: 103.5px;
+          height: 103.5px;
+          border-radius: 3%;
+        }
+
+        .center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 73px;
+
+          .care {
+            width: 15px;
+            height: 15px;
+            line-height: 15px;
+            text-align: center;
+            background-color: #62626477;
+            border-radius: 50%;
+            overflow: hidden;
+            padding-right: 2px;
+            margin-right: 5px;
+            margin-left: 3px;
+            color: #fff;
+
+          }
+
+          .text {
+            color: rgb(255, 255, 255);
+            font-weight: 700;
+            font-size: 12px;
+          }
+        }
+
+        .bottom {
+          overflow: hidden;
+          display: -ms-flexbox;
+          display: flex;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .refresh {
+      text-align: center;
+
+      .refreshBtn {
+        width: 90px;
+        height: 30px;
+        text-align: center;
+        font-size: 12px;
+      }
+    }
+
+    .hotspot {
+      padding: 15px 15px 0;
+      background-color: #fff;
+
+      .hot {
+        color: #333;
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .item {
+        padding: 15px 0;
+        display: flex;
+        border-bottom: 1px solid #f3f4f5;
+
+        .img {
+          width: 70px;
+          height: 70px;
+          margin-right: 15px;
+          overflow: hidden;
+          -ms-flex-negative: 0;
+          flex-shrink: 0;
+          position: relative;
+
+          img {
+            width: 70px;
+            height: 70px;
+          }
+
+          .caret {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 70px;
+            font-size: 35px;
+            background: rgba(0, 0, 0, .3);
+            color: #fff;
+          }
+        }
+
+        .right {
+          h4 {
+            width: 250px;
+            margin: 5px 0;
+            color: #40404c;
+            height: 20px;
+            line-height: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .descMiddle {
+            margin-bottom: 5px;
+            width: 250px;
+            font-size: 13px;
+            color: #999;
+            height: 20px;
+            line-height: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .decsBottom {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #999;
+
+            span {
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .footer{
+    position: relative;
+    width:375px;
+    height:160px;
+    text-align: center;
+    .bg-img{
+      width:100%;
+      height:180px;
+      position: absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      z-index: -1;
+    }
+    .footer-logo{
+      width:120px;
+      margin: 20px auto 0;
+    }
+    .copyright{
+      font-size: 12px;
+      width:100%;
+      padding: 0;
     }
   }
 }
