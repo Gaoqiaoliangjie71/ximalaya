@@ -193,12 +193,16 @@ onMounted(() => {
 });
 </script>
 
+<<<<<<< HEAD
+<style lang="less" scoped>
+=======
 <style lang="scss" scoped>
 // 版心
 .w {
   width: 96%;
   margin: 0 auto;
 }
+>>>>>>> e4f47490609e32e5ef51c5f2018b3dce3832428b
 .container {
   height: 100%;
   width: 100%;
