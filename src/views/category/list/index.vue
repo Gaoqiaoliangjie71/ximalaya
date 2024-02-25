@@ -73,7 +73,7 @@
       <!-- 二级目录 -->
       <div class="category2" v-if="showCategory2">
         <div v-for=" (item, index)  in  category1List " :key="item.id" class="category2-item"
-          @click="category2Handle(item.id,item.name)">
+          @click="category2Handle(item.id, item.name)">
           {{ item.name }}
         </div>
       </div>
@@ -165,7 +165,7 @@ async function getCategoryListDetail(metadataValues: string) {
   }
 }
 
-function getList(title:string){
+function getList(title: string) {
   //如果点击的是全部
   if (title === '全部') {
     getCategoryListDetail('')
@@ -206,7 +206,7 @@ function changeSortIndex2(e: any) {
 }
 
 //点击tab栏和tab栏激活改变的回调
-function changeTabs(_:number,title:string) {
+function changeTabs(_: number, title: string) {
 
   // 初始化数据
   sortIndex.value = 1
@@ -220,7 +220,7 @@ function changeTabs(_:number,title:string) {
 }
 
 //点击展开的目录列表的回调
-function category2Handle(id: number,name:string) {
+function category2Handle(id: number, name: string) {
 
   showCategory2.value = false
   active.value = id
@@ -300,6 +300,7 @@ function c2Handle(index: number) {
   background-color: #fff;
   border-left: 0.5px solid #bbb;
 }
+
 
 .tabs {
   margin-top: 5px;
