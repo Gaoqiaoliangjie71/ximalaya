@@ -1,12 +1,17 @@
 <template>
   <div class="container">
     <!-- 头部logo -->
-    <Header></Header>
+    <Header @click="toLogin"></Header>
 
     <!-- 搜索栏 -->
     <div class="search w">
       <van-icon name="search" />
-      <input type="text" placeholder="搜索" />
+      <input
+        type="text"
+        placeholder="搜索"
+        v-model="str"
+        @change="searchs(str)"
+      />
     </div>
 
     <!-- 轮播图 -->
@@ -72,6 +77,7 @@
         :key="item.albumId"
         :item="item"
         marking="ting"
+        @click="listener(item.albumId)"
       ></Listens>
     </div>
 
@@ -84,7 +90,11 @@
     <div class="time-list">
       <!-- 限时免费轮播图 -->
       <van-swipe :loop="false" indicator-color="transparent" :width="125">
-        <van-swipe-item v-for="item in limitDatas" :key="item.id">
+        <van-swipe-item
+          v-for="item in limitDatas"
+          :key="item.id"
+          @click="free(item.id)"
+        >
           <Listens :info="item" marking="xian"></Listens>
         </van-swipe-item>
       </van-swipe>
@@ -96,8 +106,9 @@
       <HotList
         :type="true"
         v-for="item in hotDatas"
-        :key="item.id"
+        :key="item.albumId"
         :item="item"
+        @click="hots(item.albumId)"
       ></HotList>
     </div>
 
@@ -107,7 +118,7 @@
       <HotList
         :type="false"
         v-for="item in hotDatas"
-        :key="item.id"
+        :key="item.albumId"
         :item="item"
       ></HotList>
     </div>
@@ -132,6 +143,7 @@ export default {
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import home from "../../api/home";
+import router from "../../router";
 
 //新人必听
 const listens = ref();
@@ -144,6 +156,34 @@ const limitOrHot = ref();
 const limitDatas = ref();
 const hotDatas = ref();
 
+//搜索双向数据绑定
+const str = ref("");
+
+//登录跳转
+const toLogin = () => {
+  router.push("../search");
+};
+
+//搜索跳转
+const searchs = (str: string) => {
+  router.push(`../search?value=${str}`);
+};
+
+//新人必听跳转
+const listener = (id: string) => {
+  router.push(`../listen?id=${id}`);
+};
+
+//限时免费跳转
+const free = (id: string) => {
+  router.push(`../rank?id=${id}`);
+};
+
+//今日热点跳转
+const hots = (id: string) => {
+  router.push(`../rank?id=${id}`);
+};
+
 //新人必听 发请求获取数据
 const findListen = async () => {
   try {
@@ -155,21 +195,21 @@ const findListen = async () => {
   }
 };
 
-//限时免费 今日热点
+//限时免费 今日热点  
 const findLimitOrHot = async () => {
   try {
     const result = await home.getLimitOrHot();
     limitOrHot.value = result.data;
     limitDatas.value = result.data.limitedFreeAlbum.limitedTimeFreeAlbums;
     hotDatas.value = result.data.hotTrack.hotTracks;
-    console.log(result);
+    // console.log(result);
   } catch (error) {
     console.log(error);
   }
 };
 
 // 倒计时
-const endTime = new Date("2024-02-25s 17:00:00").getTime(); //倒计时结束时间
+const endTime = new Date("2024-02-26 17:00:00").getTime(); //倒计时结束时间
 const countdown = ref(Math.round((endTime - Date.now()) / 1000)); //初始化剩余时间
 const countdownDisplay = computed(() => {
   const hours = Math.floor((countdown.value % 86400) / 3600);
@@ -329,3 +369,4 @@ onMounted(() => {
   }
 }
 </style>
+ 

@@ -11,7 +11,7 @@
       />
       <div class="mask">
         <van-icon name="play-circle-o" size="20" />
-        {{ marking === "ting" ? item && item.albumPlayCount :info && info.playCount }}
+        {{ marking === "ting" ? item && item.albumPlayCount : info && info.playCount }}
       </div>
     </div>
     <div class="texts">
