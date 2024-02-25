@@ -59,6 +59,7 @@ export type AuthWorkData={
 }
 export interface AuthWorkItemInfo {
   "albumInfo":{
+    "id":number,
     "cover":string,
     "title":string
   },
@@ -72,6 +73,7 @@ export type SameWorkData={
   }
 }
 export interface SameWorkItemInfo {
+  "albumId":number,
   "coverPath":string,
   "title":string,
   "playCount":number
@@ -85,6 +87,7 @@ export interface LikeWorkItemInfo {
   "albumUserNickName":string,
   "albumTitle":string,
   "albumPlayCount":number,
+  "albumTrackCount":number,
   "intro":string,
 }
 export default {

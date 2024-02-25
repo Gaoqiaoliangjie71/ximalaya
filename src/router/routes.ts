@@ -57,6 +57,10 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/detail/index.vue'),
   },
   {
+    path: '/open',
+    component: () => import('@/views/open/index.vue'),
+  },
+  {
     path: '/search',
     component: () => import('@/views/search/index.vue'),
   },

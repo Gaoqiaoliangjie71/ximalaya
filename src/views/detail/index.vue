@@ -34,8 +34,9 @@
               <span class="watch">
                 <van-icon name="play-circle-o" />
                 <span class="num">
-                  {{descInfo.albumDetailInfo.statCountInfo.playCount > 100000000 ? (descInfo.albumDetailInfo.statCountInfo.playCount / 100000000).toFixed(2) :
-                  (descInfo.albumDetailInfo.statCountInfo.playCount /10000).toFixed(2) }} 
+                  {{ descInfo.albumDetailInfo.statCountInfo.playCount > 100000000 ?
+                    (descInfo.albumDetailInfo.statCountInfo.playCount / 100000000).toFixed(2) :
+                    (descInfo.albumDetailInfo.statCountInfo.playCount / 10000).toFixed(2) }}
                   {{ descInfo.albumDetailInfo.statCountInfo.playCount > 100000000 ? "亿" : "万" }}</span>
               </span>
               <span class="watch">
@@ -54,12 +55,11 @@
           </div>
         </div>
         <div class="btn">
-          <div class="actionBtn">打开APP,完整收听</div>
+          <div class="actionBtn" @click="toOpen">打开APP,完整收听</div>
         </div>
       </div>
 
-
-      <!-- 第二个页面，课程列表 -->
+      <!-- 课程列表 -->
       <div class="courseList">
         <div class="courseTop">
           <div class="courseLeft">节目（{{ totalCount }}）</div>
@@ -72,29 +72,33 @@
           <div class="leftMiddle">
             <div class="titleMiddle">{{ item.trackInfo.title }}</div>
             <div class="descMiddle grey">
-              <span><van-icon name="play-circle-o" /> 
+              <span><van-icon name="play-circle-o" />
                 {{ item.statCountInfo.playCount > 100000000 ? (item.statCountInfo.playCount / 100000000).toFixed(2) :
-                  (item.statCountInfo.playCount / 10000).toFixed(2) }} {{ item.statCountInfo.playCount > 100000000 ? "亿" : "万" }}
+                  (item.statCountInfo.playCount / 10000).toFixed(2) }} {{ item.statCountInfo.playCount > 100000000 ? "亿" :
+    "万" }}
               </span>
-              <span><van-icon name="clock-o" />{{ String(Math.floor(item.trackInfo.duration/60)).padStart(2, '0') }}:{{ String(item.trackInfo.duration % 60).padStart(2, '0') }}</span>
+              <span><van-icon name="clock-o" /> {{ String(Math.floor(item.trackInfo.duration / 60)).padStart(2, '0') }}:{{
+                String(item.trackInfo.duration % 60).padStart(2, '0') }}</span>
             </div>
           </div>
-          <div class="rightMiddle">
+          <div class="rightMiddle" @click="toOpen">
             <van-icon color="#ff4646" name="play-circle-o" />
           </div>
         </div>
-        <div class="courseMore">
-          <span>加载更多</span>
+        <div class="courseMore" @click="toOpen">
+          <span @click="toOpen">加载更多</span>
           <van-icon name="arrow-down" />
         </div>
       </div>
+
       <!-- 主播作品 -->
       <div class="comment">
         <div class="comTitle">
           主播作品
         </div>
         <div class="album">
-          <div class="album-item" v-for="(item, index) in albumBriefDetailInfos" :key="index">
+          <div class="album-item" v-for="(item, index) in albumBriefDetailInfos" :key="index"
+            @click="toDetail(item.albumInfo.id)">
             <img class="top" :src="baseurl + item.albumInfo.cover">
             <p class="center">
             <div class="care">
@@ -107,7 +111,7 @@
         </div>
       </div>
 
-      <!-- 第三个页面，评价信息 -->
+      <!-- 评价信息 -->
       <div class="comment">
         <div class="comTitle">
           用户评价
@@ -126,7 +130,7 @@
                   <span> {{ makeData(item.createdAt) }}</span>
                 </div>
                 <div class="bomRight">
-                  <span>{{item.likes}} </span>
+                  <span>{{ item.likes }} </span>
                   <van-icon name="good-job-o" />
                 </div>
               </div>
@@ -139,7 +143,7 @@
             </div>
           </div>
         </ul>
-        <div class="moreCom">
+        <div class="moreCom" @click="toOpen">
           查看更多评价
         </div>
       </div>
@@ -150,7 +154,7 @@
           相似专辑
         </div>
         <div class="album-ver">
-          <div class="album-item" v-for="(item, index) in sameWorkList" :key="index">
+          <div class="album-item" v-for="(item, index) in sameWorkList" :key="index" @click="toDetail(item.albumId)">
             <img class="top" :src="`https://imagev2.xmcdn.com/${item.coverPath}`">
             <p class="center">
             <div class="care">
@@ -171,37 +175,36 @@
           换一批
         </van-button>
       </div>
+
       <!-- 猜你喜欢 -->
       <div class="hotspot">
         <div class="hot">猜你喜欢</div>
-        <div class="item" v-for="item in likeList" :key="item.albumId">
+        <div class="item" v-for="item in likeList" :key="item.albumId" @click="toDetail(item.albumId)">
           <div class="img">
-            <img :src="`https://imagev2.xmcdn.com/${item.albumCoverPath}`" alt="">
-            <div class="caret">
-              <van-icon name="play" />
-            </div>
+            <img :src="`https://imagev2.xmcdn.com/${item.albumCoverPath}`" alt="图片">
           </div>
           <div class="right">
             <h4>{{ item.albumTitle }}</h4>
             <div class="descMiddle">{{ item.intro }}</div>
             <div class="decsBottom">
               <span>
-                <van-icon name="manager-o" />
-                <span>{{ item.albumUserNickName }}</span>
-              </span>
-              <span>
-                <van-icon name="service" />
+                <van-icon name="play" />
                 <span>{{ item.albumPlayCount > 100000000 ? (item.albumPlayCount / 100000000).toFixed(2) :
                   (item.albumPlayCount /
                     10000).toFixed(2) }} {{ item.albumPlayCount > 100000000 ? "亿" : "万" }}</span>
+              </span>
+              <span>
+                <van-icon name="service" />
+                <span> {{ item.albumTrackCount }}</span>
               </span>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- 固定定位的按键，APP打开 -->
       <div class="btn" v-show="localBtnShow">
-        <div class="localBtn">APP内打开</div>
+        <div class="localBtn" @click="toOpen">APP内打开</div>
       </div>
     </div>
     <!-- 底部 -->
@@ -223,14 +226,34 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import detailApi, { AuthData, AuthWorkItemInfo, ComItemInfo, LikeWorkItemInfo, SameWorkItemInfo } from '../../api/detail'
 import { DescData } from '../../api/detail';
 import router from "../../router/index";
 
-const id=parseInt(router.currentRoute.value.params.id as any)
-let anchorId=0
-let title=''
+// 点击其他作品，打开其他作品的课程详情
+// 通过监视 前端路由router的变化
+watch(
+  () => router.currentRoute.value.params.id,
+  (to, from) => {
+    console.log(to, from);
+    id = parseInt(to as any)
+    isTextShow.value = false
+    isComShow.value = false
+    getDesc()
+    window.addEventListener("scroll", scrolling);
+    getGuessLike()
+  }
+)
+const toOpen = () => {
+  router.push({ path: "/open" })
+}
+const toDetail = (newId: number) => {
+  router.replace({ path: `/detail/${newId}` })
+}
+let anchorId = 0
+let title = ''
+let id = parseInt(router.currentRoute.value.params.id as any)
 
 // 第一个页面
 const str = ref("")
@@ -257,13 +280,16 @@ const getDesc = async () => {
   try {
     const res = await detailApi.findCourseDesc(id)
     descInfo.value = res.data
-    anchorId=res.data.albumDetailInfo.albumInfo.anchorId
-    title=res.data.albumDetailInfo.albumInfo.title
+    anchorId = res.data.albumDetailInfo.albumInfo.anchorId
+    title = res.data.albumDetailInfo.albumInfo.title
     str.value = descInfo.value.albumRichInfo.richIntro.replace('\"', '"')
-  
+
     getAuth()
-    getAuthWork({anchorId})
-    getSameWork({kw:title})
+    getAuthWork({ anchorId })
+    getSameWork({ kw: title })
+    getList({ flag: flag.value, albumId: id })
+    getComment(id)
+
   } catch (error) {
     console.log("获取介绍信息失败");
   }
@@ -286,7 +312,7 @@ const getAuth = async () => {
 const flag = ref(true)
 const totalCount = ref()
 const courseList = ref()
-const getList = async (obj:{flag:boolean,albumId:number,page?:number,pageSize?:number}) => {
+const getList = async (obj: { flag: boolean, albumId: number, page?: number, pageSize?: number }) => {
   try {
     const res = await detailApi.findCourseList(obj)
     totalCount.value = res.data.totalCount
@@ -297,14 +323,14 @@ const getList = async (obj:{flag:boolean,albumId:number,page?:number,pageSize?:n
 }
 const sortHandle = () => {
   flag.value = !flag.value
-  getList({flag:flag.value,albumId:id})
+  getList({ flag: flag.value, albumId: id })
 }
 // 第三个页面，评价
 const isComShow = ref(false)
 const commentList = ref<ComItemInfo[]>()
-const getComment = async () => {
+const getComment = async (id: number) => {
   try {
-    const res = await detailApi.findComment({albumId :id})
+    const res = await detailApi.findComment({ albumId: id })
     commentList.value = res.data.comments
   } catch (error) {
     console.log("获取介绍信息失败");
@@ -342,7 +368,7 @@ const scrolling = () => {
 const baseurl = ref('https://imagev2.xmcdn.com/');
 const albumBriefDetailInfos = ref<AuthWorkItemInfo[]>([]);
 // 作者作品
-const getAuthWork = async (obj:{anchorId:number,page?:number,pageSize?:number,asc?:boolean}) => {
+const getAuthWork = async (obj: { anchorId: number, page?: number, pageSize?: number, asc?: boolean }) => {
   try {
     const res = await detailApi.findAuthWork(obj)
     albumBriefDetailInfos.value = res.data.albumBriefDetailInfos
@@ -354,7 +380,7 @@ const getAuthWork = async (obj:{anchorId:number,page?:number,pageSize?:number,as
 const page = ref<number>(1)
 const sameWorkList = ref<SameWorkItemInfo[]>([])
 // 相似作品
-const getSameWork = async (obj:{kw:string,page?:number,rows?:number,device?:string,condition?:string,spellchecker?:boolean,core?:string}) => {
+const getSameWork = async (obj: { kw: string, page?: number, rows?: number, device?: string, condition?: string, spellchecker?: boolean, core?: string }) => {
   try {
     const res = await detailApi.findSameWork(obj)
     sameWorkList.value = res.data.album.docs
@@ -365,7 +391,7 @@ const getSameWork = async (obj:{kw:string,page?:number,rows?:number,device?:stri
 const changeHandler = () => {
   page.value = page.value + 1
   console.log(page.value);
-  getSameWork({ page: page.value,kw:title})
+  getSameWork({ page: page.value, kw: title })
 }
 // 猜你喜欢
 const likeList = ref<LikeWorkItemInfo[]>([])
@@ -380,12 +406,10 @@ const getGuessLike = async () => {
 // 挂载请求数据
 onMounted(async () => {
   getDesc()
-  getList({flag:flag.value,albumId:id})
-  getComment()
   window.addEventListener("scroll", scrolling);
   getGuessLike()
-  
 })
+
 onUnmounted(() => {
   window.removeEventListener("scroll", scrolling);
 })
@@ -407,7 +431,7 @@ onUnmounted(() => {
       color: #7e8c8d;
     }
 
-    // 第一个页面
+    // 课程介绍
     .desc {
       .top {
         display: flex;
@@ -562,10 +586,11 @@ onUnmounted(() => {
         left: 0;
         right: 0;
         bottom: 20px;
+        z-index: 999;
       }
     }
 
-    // 第二个页面
+    // 课程列表
     .courseList {
       margin-top: 20px;
       padding: 10px;
@@ -622,7 +647,7 @@ onUnmounted(() => {
       }
     }
 
-    // 第三个页面
+    // 用户评价
     .comment {
       padding: 10px 10px 0;
 
@@ -725,10 +750,17 @@ onUnmounted(() => {
       }
     }
 
+    // 作者作品
     .album {
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
+
+      // 数据不够三条时，用于占位
+      // &:after {
+      //   content: "";
+      //   width: 103.5px;
+      // }
 
       .album-item {
         width: 103.5px;
@@ -784,6 +816,7 @@ onUnmounted(() => {
       }
     }
 
+    // 相似作品
     .album-ver {
 
       display: flex;
@@ -844,6 +877,7 @@ onUnmounted(() => {
       }
     }
 
+    // 换一批按键
     .refresh {
       text-align: center;
 
@@ -855,6 +889,7 @@ onUnmounted(() => {
       }
     }
 
+    // 猜你喜欢
     .hotspot {
       padding: 15px 15px 0;
       background-color: #fff;
@@ -966,5 +1001,4 @@ onUnmounted(() => {
       padding: 0;
     }
   }
-}
-</style>
+}</style>
