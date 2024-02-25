@@ -4,14 +4,14 @@
       <div class="header ">
         <div class="back">
           <van-icon name="arrow-left" />
-          音乐
+          {{ head }}
         </div>
 
         <div class="login">登 录</div>
       </div>
-      <van-tabs @click-tab="changeTabs" v-model:active="active">
+      <van-tabs @change="changeTabs" v-model:active="active">
         <div class="wrapper">
-          <van-tab v-for="( item, index ) in  category1List " :key="item.id" :title="item.name">
+          <van-tab v-for="( item, index ) in  category1List " :key="item.id" :title="item.name" :name="item.id">
             <div class="tabs" @click="changeSortIndex">
               <div :data-index="1" :class="['tabs-item', sortIndex === 1 ? 'active' : '']">综合排序</div>
               <div :data-index="3" :class="['tabs-item', sortIndex === 3 ? 'active' : '']">最多播放</div>
@@ -27,7 +27,7 @@
                 <div class="wrapper1-content">
                   <div :class="['wrapper1-item', 'tabs-item', c2Index === index ? 'active' : '']"
                     v-for="(info, index) in item.metadataValues[0].metadataValues[0].metadataValues[0].metadataValues"
-                    :key="index">
+                    :key="index" @click="c2Handle(index)">
                     {{ info.name }}
                   </div>
                 </div>
@@ -72,7 +72,8 @@
       </div>
       <!-- 二级目录 -->
       <div class="category2" v-if="showCategory2">
-        <div v-for=" (item,index)  in  category1List " :key="item.id" class="category2-item" @click="category2Handle(index)">
+        <div v-for=" (item, index)  in  category1List " :key="item.id" class="category2-item"
+          @click="category2Handle(item.id,item.name)">
           {{ item.name }}
         </div>
       </div>
@@ -88,11 +89,21 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import router from '@/router/index.ts'
 
 import categoryApi from '@/api/category'
 import type { subCategoriesData, AlbumsData } from '@/api/category'
+
+const head = computed({
+  get() {
+    return router.currentRoute.value.params.title
+  },
+  set() { }
+})
+
+//tabs 选中的标题
+const titleStr = ref('')
 
 const active = ref(0);
 
@@ -106,7 +117,6 @@ const c2Index = ref(0)
 onMounted(() => {
 
   getCategoryList()
-
 
 })
 
@@ -126,9 +136,6 @@ async function getCategoryList() {
     })
     category1List.value = result.data.metadata[0].metadataValues
 
-    //获取列表
-    getCategoryListDetail()
-
 
   } catch (error) {
     console.log(error);
@@ -141,20 +148,34 @@ const pageSize = ref(10)
 
 const albumsList = ref<AlbumsData[]>([])
 //获取列表的功能函数
-async function getCategoryListDetail() {
+async function getCategoryListDetail(metadataValues: string) {
   const id = router.currentRoute.value.params.id
   try {
     const result = await categoryApi.findCategoryListDetail({
       pageNum: pageNum.value,
       pageSize: pageSize.value,
       sort: sortIndex.value,
-      categoryId: id
+      categoryId: id,
+      metadataValues
     })
     albumsList.value = result.data.albums
 
   } catch (error) {
     console.log(error);
   }
+}
+
+function getList(title:string){
+  //如果点击的是全部
+  if (title === '全部') {
+    getCategoryListDetail('')
+    return
+  }
+
+  const metadataValues: string = `${head.value},${title}`
+
+  //重新获取列表
+  getCategoryListDetail(metadataValues)
 }
 //#endregion
 
@@ -164,6 +185,7 @@ const isSelect = ref(false)
 //点击筛选的回调
 function changeSelect() {
   isSelect.value = !isSelect.value
+  c2Index.value = 0
 }
 
 //排序
@@ -173,6 +195,9 @@ const sortIndex2 = ref(0)
 //点击第一行排序的回调函数
 function changeSortIndex(e: any) {
   sortIndex.value = e.target.dataset.index / 1
+
+  //重新获取列表数据
+  getList(titleStr.value)
 }
 
 //点击第二行排序的回调函数
@@ -180,17 +205,33 @@ function changeSortIndex2(e: any) {
   sortIndex2.value = e.target.dataset.index / 1
 }
 
-//点击tab栏的回调
-function changeTabs() {
-  sortIndex.value = 0
+//点击tab栏和tab栏激活改变的回调
+function changeTabs(_:number,title:string) {
+
+  // 初始化数据
+  sortIndex.value = 1
   sortIndex2.value = 0
+
+  //设置一个ref sort的时候用
+  titleStr.value = title
+
+  getList(title)
+
 }
 
-//点击
-function category2Handle(index : number){
-  showCategory2.value = false
-  
+//点击展开的目录列表的回调
+function category2Handle(id: number,name:string) {
 
+  showCategory2.value = false
+  active.value = id
+
+  //重新获取列表
+  getList(name)
+
+}
+
+function c2Handle(index: number) {
+  c2Index.value = index
 }
 
 
@@ -265,7 +306,6 @@ function category2Handle(index : number){
   margin-left: 5px;
   display: flex;
   height: 30px;
-  width: 100%;
 
   .wrapper1 {
     width: 100%;

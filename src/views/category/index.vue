@@ -14,7 +14,7 @@
       <div class="right" @scroll="getScroll" ref="rightScroll">
         <div ref="rightItem" class="right-item" v-for="item in category1List" :key="item.id">
           <!-- 右侧小标题 -->
-          <van-cell :title="item.title" is-link to="index" @click="toList(item.id)"/>
+          <van-cell :title="item.title" is-link to="index" @click="toList(item.id,item.title)"/>
           <!-- 小标题下的内容 -->
           <div class="item-content">
             <div class="item" v-for="info in item.subCategories[0]?.metadataValues" :key="info.id">{{ info.name }}</div>
@@ -146,8 +146,8 @@ function getScroll() {
 }
 
 //跳转列表页
-function toList(id : number){
-  router.push(`/category/list/${id}`)
+function toList(id : number,title:string){
+  router.push(`/category/list/${id}/${title}`)
 }
 
 

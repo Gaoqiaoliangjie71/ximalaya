@@ -45,7 +45,7 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/category/index.vue')
   },
   {
-    path: '/category/list/:id',
+    path: '/category/list/:id/:title',
     component: () => import('@/views/category/list/index.vue'),
   },
   {
