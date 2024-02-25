@@ -9,6 +9,7 @@
                 v-for="item2 in item.tabWraps"
                 :id="item2.id"
                 :title="item2.name"
+                @click="changeRankingId(item2)"
               >
               </van-sidebar-item>
             </van-sidebar>
@@ -60,16 +61,20 @@ const rankStore = useRankStore();
 const active = ref(0);
 const actt = ref(0);
 
-const { tabLists, rankListData, rankingId } = storeToRefs(rankStore);
+const { tabLists, rankListData } = storeToRefs(rankStore);
 onMounted(() => {
   rankStore.getTabLists();
   rankStore.getRankListData();
+  // console.log(rankingId);
 
   // console.log(tabLists);
 });
-// const changeRankingId = (rankingid: number) => {
-//   rankingId = rankingid;
-// };
+const changeRankingId = (item: any) => {
+  // console.log(tabLists);
+  // console.log(item.rankingId);
+  rankStore.getRankListData(item.rankingId);
+  // rankingId = item.rankingId;
+};
 </script>
 
 <style lang="less" scoped>
@@ -98,7 +103,7 @@ onMounted(() => {
       align-items: center;
       width: 100%;
       height: 80px;
-      border: 1px solid red;
+      border-bottom: 1px solid #a3a3ac;
       img {
         margin-left: 8px;
         border-radius: 4px;
@@ -117,9 +122,13 @@ onMounted(() => {
           font-weight: 600;
           // border: 2px solid blue  .data-message {
           font-size: 12px;
-          color: #999;
           display: flex;
           // border: 1px solid red;
+        }
+        .data-message {
+          display: flex;
+          color: #999;
+          font-size: 12px;
           .play-message {
             display: flex;
             align-items: center;
