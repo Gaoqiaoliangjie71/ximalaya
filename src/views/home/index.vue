@@ -169,7 +169,11 @@ const findLimitOrHot = async () => {
 };
 
 // 倒计时
+<<<<<<< HEAD
 const endTime = new Date("2024-02-25 17:00:00").getTime(); //倒计时结束时间
+=======
+const endTime = new Date("2024-02-25s 17:00:00").getTime(); //倒计时结束时间
+>>>>>>> yenana
 const countdown = ref(Math.round((endTime - Date.now()) / 1000)); //初始化剩余时间
 const countdownDisplay = computed(() => {
   const hours = Math.floor((countdown.value % 86400) / 3600);
