@@ -12,7 +12,9 @@ declare module 'vue' {
     Listens: typeof import('./src/components/listens/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanButton: typeof import('vant/es')['Button']
     VanIcon: typeof import('vant/es')['Icon']
+<<<<<<< HEAD
 <<<<<<< HEAD
     VanSidebar: typeof import('vant/es')['Sidebar']
     VanSidebarItem: typeof import('vant/es')['SidebarItem']
@@ -23,5 +25,12 @@ declare module 'vue' {
 >>>>>>> yenana
     VanTab: typeof import('vant/es')['Tab']
     VanTabs: typeof import('vant/es')['Tabs']
+=======
+    VanSkeleton: typeof import('vant/es')['Skeleton']
+    VanSkeletonImage: typeof import('vant/es')['SkeletonImage']
+    VanSkeletonParagraph: typeof import('vant/es')['SkeletonParagraph']
+    VanSwipe: typeof import('vant/es')['Swipe']
+    VanSwipeItem: typeof import('vant/es')['SwipeItem']
+>>>>>>> 9dc619c0ca02c6411aed13234f1ddbc61d2dbde5
   }
 }
