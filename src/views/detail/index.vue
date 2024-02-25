@@ -1,41 +1,56 @@
 <template>
   <div class="detail">
-    <div class="header">头部</div>
-    <div class="content">
+    <Header></Header>
 
-    <!-- 第一个页面 -->
+    <!-- 加载时显示的骨架屏 -->
+    <van-skeleton v-if="!auth.userInfo.logo">
+      <template #template>
+        <div :style="{ display: 'flex', width: '100%' }">
+          <van-skeleton-image />
+          <div :style="{ flex: 1, marginLeft: '16px' }">
+            <van-skeleton-paragraph row-width="60%" />
+            <van-skeleton-paragraph />
+            <van-skeleton-paragraph />
+            <van-skeleton-paragraph />
+          </div>
+        </div>
+      </template>
+    </van-skeleton>
+
+    <div v-else class="content">
+      <!-- 第一个页面,作品介绍 -->
       <div class="desc">
         <div class="top">
           <div class="left">
-            <img
-              src="//imagev2.xmcdn.com/storages/5a86-audiofreehighqps/D8/E5/GKwRIJEFfkl9AAOIigD9zcBJ.png!op_type=3&columns=144&rows=144"
-              alt="郭德纲21年相声精选">
+            <img :src="'//imagev2.xmcdn.com/' + descInfo.albumDetailInfo.albumInfo.cover" alt="郭德纲21年相声精选">
           </div>
           <div class="right">
-            <div class="title">郭德纲21年相声精选</div>
+            <div class="title">{{ descInfo.albumDetailInfo.albumInfo.title }}</div>
             <div class="auth">
-              <img
-                src="//imagev2.xmcdn.com/group1/M00/0B/3D/wKgDrlESHqyTqakZAADewk1yMt8360.jpg!op_type=5&device_type=ios&name=web_meduim&upload_type=cover&magick=webp"
-                alt="">
-              <span class="grey">德云社郭德纲相声VIP</span>
+              <img :src="'//imagev2.xmcdn.com/' + auth.userInfo.logo" alt="">
+              <span class="grey">{{ auth.userInfo.nickname }}</span>
             </div>
             <div class="count grey">
               <span class="watch">
                 <van-icon name="play-circle-o" />
-                <span class="num">34.17亿</span>
+                <span class="num">
+                  {{descInfo.albumDetailInfo.statCountInfo.playCount > 100000000 ? (descInfo.albumDetailInfo.statCountInfo.playCount / 100000000).toFixed(2) :
+                  (descInfo.albumDetailInfo.statCountInfo.playCount /10000).toFixed(2) }} 
+                  {{ descInfo.albumDetailInfo.statCountInfo.playCount > 100000000 ? "亿" : "万" }}</span>
               </span>
               <span class="watch">
                 <van-icon name="certificate" />
-                <span class="num">877.76万</span>
+                <span class="num">{{ (descInfo.albumDetailInfo.statCountInfo.subscribeCount / 10000).toFixed(2) }}
+                  万</span>
               </span>
             </div>
           </div>
         </div>
         <div class="middle" :style="{ 'height': isTextShow ? 'auto' : '100px' }">
           <div class="text" v-html="str"></div>
-          <div class="transparent"></div>
-          <div class="showMore">
-            <van-icon name="arrow-double-right" color="red" class="rotate-90"/>
+          <div class="transparent" v-show="!isTextShow"></div>
+          <div class="showMore" @click="isTextShow = true" v-show="!isTextShow">
+            <van-icon name="arrow-double-right" color="red" class="rotate-90" />
           </div>
         </div>
         <div class="btn">
@@ -44,10 +59,161 @@
       </div>
 
 
-    <!-- 第二个页面 -->
-      <div class="courseList"></div>
+      <!-- 第二个页面，课程列表 -->
+      <div class="courseList">
+        <div class="courseTop">
+          <div class="courseLeft">节目（{{ totalCount }}）</div>
+          <div class="courseRight grey" @click="sortHandle">
+            <van-icon name="sort" />
+            <span>切换顺序</span>
+          </div>
+        </div>
+        <div class="courseMiddle" v-for="(item, index) in courseList" :key="index">
+          <div class="leftMiddle">
+            <div class="titleMiddle">{{ item.trackInfo.title }}</div>
+            <div class="descMiddle grey">
+              <span><van-icon name="play-circle-o" /> 
+                {{ item.statCountInfo.playCount > 100000000 ? (item.statCountInfo.playCount / 100000000).toFixed(2) :
+                  (item.statCountInfo.playCount / 10000).toFixed(2) }} {{ item.statCountInfo.playCount > 100000000 ? "亿" : "万" }}
+              </span>
+              <span><van-icon name="clock-o" />{{ String(Math.floor(item.trackInfo.duration/60)).padStart(2, '0') }}:{{ String(item.trackInfo.duration % 60).padStart(2, '0') }}</span>
+            </div>
+          </div>
+          <div class="rightMiddle">
+            <van-icon color="#ff4646" name="play-circle-o" />
+          </div>
+        </div>
+        <div class="courseMore">
+          <span>加载更多</span>
+          <van-icon name="arrow-down" />
+        </div>
+      </div>
+      <!-- 主播作品 -->
+      <div class="comment">
+        <div class="comTitle">
+          主播作品
+        </div>
+        <div class="album">
+          <div class="album-item" v-for="(item, index) in albumBriefDetailInfos" :key="index">
+            <img class="top" :src="baseurl + item.albumInfo.cover">
+            <p class="center">
+            <div class="care">
+              <van-icon name="play" />
+            </div>
+            <div class="text"> {{ (item.statCountInfo.playCount / 10000).toFixed(2) }}万 </div>
+            </p>
+            <p class="bottom">{{ item.albumInfo.title }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第三个页面，评价信息 -->
+      <div class="comment">
+        <div class="comTitle">
+          用户评价
+        </div>
+        <ul class="comContext" :style="{ 'height': isComShow ? 'auto' : '300px' }">
+          <li v-for="item in commentList" :key="item.id">
+            <div class="comLeft">
+              <img :src="'//imagev2.xmcdn.com/' + item.smallHeader" alt="">
+            </div>
+            <div class="comRight">
+              <div class="comTop">{{ item.nickname }}</div>
+              <div class="comMiddle" v-html="item.content"></div>
+              <div class="comBottom">
+                <div class="bomLeft">
+                  <span>回复 </span>
+                  <span> {{ makeData(item.createdAt) }}</span>
+                </div>
+                <div class="bomRight">
+                  <span>{{item.likes}} </span>
+                  <van-icon name="good-job-o" />
+                </div>
+              </div>
+            </div>
+          </li>
+          <div class="comBom" v-show="!isComShow">
+            <div class="transparent"></div>
+            <div class="showMore" @click="isComShow = true">
+              <van-icon name="arrow-double-right" color="red" class="rotate-90" />
+            </div>
+          </div>
+        </ul>
+        <div class="moreCom">
+          查看更多评价
+        </div>
+      </div>
+
+      <!-- 相似专辑 -->
+      <div class="comment">
+        <div class="comTitle">
+          相似专辑
+        </div>
+        <div class="album-ver">
+          <div class="album-item" v-for="(item, index) in sameWorkList" :key="index">
+            <img class="top" :src="`https://imagev2.xmcdn.com/${item.coverPath}`">
+            <p class="center">
+            <div class="care">
+              <van-icon name="play" />
+            </div>
+            <div class="text"> {{ (item.playCount / 10000).toFixed(2) }}
+              万</div>
+            </p>
+            <p class="bottom">{{ item.title }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 换一批 -->
+      <div class="refresh">
+        <van-button class="refreshBtn" type="danger" round @click="changeHandler">
+          <van-icon name="replay" />
+          换一批
+        </van-button>
+      </div>
+      <!-- 猜你喜欢 -->
+      <div class="hotspot">
+        <div class="hot">猜你喜欢</div>
+        <div class="item" v-for="item in likeList" :key="item.albumId">
+          <div class="img">
+            <img :src="`https://imagev2.xmcdn.com/${item.albumCoverPath}`" alt="">
+            <div class="caret">
+              <van-icon name="play" />
+            </div>
+          </div>
+          <div class="right">
+            <h4>{{ item.albumTitle }}</h4>
+            <div class="descMiddle">{{ item.intro }}</div>
+            <div class="decsBottom">
+              <span>
+                <van-icon name="manager-o" />
+                <span>{{ item.albumUserNickName }}</span>
+              </span>
+              <span>
+                <van-icon name="service" />
+                <span>{{ item.albumPlayCount > 100000000 ? (item.albumPlayCount / 100000000).toFixed(2) :
+                  (item.albumPlayCount /
+                    10000).toFixed(2) }} {{ item.albumPlayCount > 100000000 ? "亿" : "万" }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn" v-show="localBtnShow">
+        <div class="localBtn">APP内打开</div>
+      </div>
     </div>
-    <div class="footer"></div>
+    <!-- 底部 -->
+    <div class="footer">
+      <img class="bg-img"
+        src="https://imagev2.xmcdn.com/storages/2165-audiofreehighqps/52/6D/GKwRIDoF6Ml9AAESnAEaI6xF.png!magick=webp">
+      <img class="footer-logo"
+        src="https://imagev2.xmcdn.com/storages/3777-audiofreehighqps/49/07/GMCoOSMH3Kb7AAAPQgH_va2X.png!magick=webp">
+      <div class="copyright grey">
+        <p>© 2014-<!-- -->2024<!-- --> 喜马拉雅 版权所有</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -57,20 +223,172 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-// import detailApi, { type TrademarkData } from '@/api/detail'
-// import { ElMessage } from 'element-plus';
-// import { Plus } from '@element-plus/icons-vue'
-// import type { UploadProps } from 'element-plus'
+import { ref, onMounted, onUnmounted } from 'vue'
+import detailApi, { AuthData, AuthWorkItemInfo, ComItemInfo, LikeWorkItemInfo, SameWorkItemInfo } from '../../api/detail'
+import { DescData } from '../../api/detail';
+import router from "../../router/index";
 
+const id=parseInt(router.currentRoute.value.params.id as any)
+let anchorId=0
+let title=''
+
+// 第一个页面
 const str = ref("")
 const isTextShow = ref(false)
-onMounted(() => {
-  const oldStr = "<p style=\"color:#333333;font-weight:normal;font-size:16px;line-height:30px;font-family:Helvetica,Arial,sans-serif;hyphens:auto;text-align:justify;\"><b><span><span><a ref=\"nofollow\" href=\"https://www.ximalaya.com/album/75632628\" style=\"color:#4990E2;text-decoration:none;\"><b>2023德云社线下相声专场，超全合集，点击收听~</b></a></span></span></b></p><p data-flag=\"normal\" style=\"color:#333333;font-weight:normal;font-size:16px;line-height:30px;font-family:Helvetica,Arial,sans-serif;hyphens:auto;text-align:justify;\"><b><a ref=\"nofollow\" href=\"https://www.ximalaya.com/album/77673191\" style=\"color:#4990E2;text-decoration:none;\"><b>张九龄2023年线下专场，全新上线~</b></a></b></p><p style=\"color:#333333;font-weight:normal;font-size:16px;line-height:30px;font-family:Helvetica,Arial,sans-serif;hyphens:auto;text-align:justify;\" data-flag=\"normal\"><b><a ref=\"nofollow\" href=\"https://www.ximalaya.com/album/77673191\" style=\"color:#4990E2;text-decoration:none;\"><b>孟鹤堂2023年线下专场，爆笑收听~</b></a></b></p><p style=\"color:#333333;font-weight:normal;font-size:16px;line-height:30px;font-family:Helvetica,Arial,sans-serif;hyphens:auto;text-align:justify;\" data-flag=\"normal\"><b><a ref=\"nofollow\" href=\"https://www.ximalaya.com/album/77673191\" style=\"color:#4990E2;text-decoration:none;\"><b>高峰栾云平2023年线下专场，独家首发~</b></a></b></p><p style=\"color:#333333;font-weight:normal;font-size:16px;line-height:30px;font-family:Helvetica,Arial,sans-serif;hyphens:auto;text-align:justify;\" data-flag=\"normal\"><b><a ref=\"nofollow\" href=\"https://www.ximalaya.com/album/75940105\" style=\"color:#4990E2;text-decoration:none;\"><b>2023张鹤伦线下相声专场，最新专场~</b></a></b></p><span><br /></span><span><br /></span><p style=\"color:#333333;font-weight:normal;font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;hyphens:auto;text-align:justify;\" data-flag=\"normal\"><b>高清！经典！免费！</b></p><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><b>郭德纲21年相声精选 强势来袭！</b></p><span><br /></span><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><span>老郭经典相声，入坑必备！</span></p><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><span>每一集都有你意料之外的包袱</span></p><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><span>每一场都是德云粉丝的必修课</span></p><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><span>每一句都是老郭的经典爆笑演绎</span></p><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><span>每一秒都是你不容错过的快乐时光</span></p><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><b>本专辑为喜马拉雅【音频独家】节目</b></p><p style=\"font-size:16px;line-height:30px;font-family:Helvetica, Arial, sans-serif;color:#333333;font-weight:normal;text-align:left;\" data-flag=\"normal\"><span>【德云更多精彩专辑，点击直达】</span></p><span><br /><br /></span>"
-  str.value = oldStr.replace('\"', '"')
-  console.log(str.value);
+const descInfo = ref<DescData>(
+  {
+    "albumDetailInfo": {
+      "albumInfo": {
+        "cover": '',
+        "title": '',
+        "albumWrap": {
+          "title": '',
+          "coverPath": '',
+        }
+      },
+      "statCountInfo": {
+        "subscribeCount": 0,
+        "playCount": 0,
+      }
+    },
+    "albumRichInfo": { "richIntro": "" }
+  })
+const getDesc = async () => {
+  try {
+    const res = await detailApi.findCourseDesc(id)
+    descInfo.value = res.data
+    anchorId=res.data.albumDetailInfo.albumInfo.anchorId
+    title=res.data.albumDetailInfo.albumInfo.title
+    str.value = descInfo.value.albumRichInfo.richIntro.replace('\"', '"')
+  
+    getAuth()
+    getAuthWork({anchorId})
+    getSameWork({kw:title})
+  } catch (error) {
+    console.log("获取介绍信息失败");
+  }
+}
+const auth = ref<AuthData>({
+  userInfo: {
+    "logo": "",
+    "nickname": "",
+  }
 })
+const getAuth = async () => {
+  try {
+    const res = await detailApi.findAuth(anchorId)
+    auth.value = res.data
+  } catch (error) {
+    console.log("获取介绍信息失败");
+  }
+}
+// 第二个页面
+const flag = ref(true)
+const totalCount = ref()
+const courseList = ref()
+const getList = async (obj:{flag:boolean,albumId:number,page?:number,pageSize?:number}) => {
+  try {
+    const res = await detailApi.findCourseList(obj)
+    totalCount.value = res.data.totalCount
+    courseList.value = res.data.trackDetailInfos
+  } catch (error) {
+    console.log("获取介绍信息失败");
+  }
+}
+const sortHandle = () => {
+  flag.value = !flag.value
+  getList({flag:flag.value,albumId:id})
+}
+// 第三个页面，评价
+const isComShow = ref(false)
+const commentList = ref<ComItemInfo[]>()
+const getComment = async () => {
+  try {
+    const res = await detailApi.findComment({albumId :id})
+    commentList.value = res.data.comments
+  } catch (error) {
+    console.log("获取介绍信息失败");
+  }
+}
+// 对时间戳处理的函数
+const makeData = (time: number) => {
+  // 创建一个新的Date对象，并传入时间戳作为参数
+  const dateObj = new Date(time); // 注意时间戳单位是秒，而不是毫秒
 
+  // 使用Date对象的方法获取年、月、日等日期信息
+  const year = dateObj.getFullYear();
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+  const day = dateObj.getDate().toString().padStart(2, '0');
+
+  // 组合得到完整的日期字符串
+  const formattedDateTime = `${year}-${month}-${day}`;
+  return formattedDateTime
+}
+
+// 固定定位的按钮是否展示
+const localBtnShow = ref(false)
+const scrolling = () => {
+  // 滚动条距文档顶部的距离
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+  // console.log("header 滚动距离 ", );
+  if (scrollTop > 600) {
+    localBtnShow.value = true
+  } else {
+    localBtnShow.value = false
+  }
+
+};
+
+const baseurl = ref('https://imagev2.xmcdn.com/');
+const albumBriefDetailInfos = ref<AuthWorkItemInfo[]>([]);
+// 作者作品
+const getAuthWork = async (obj:{anchorId:number,page?:number,pageSize?:number,asc?:boolean}) => {
+  try {
+    const res = await detailApi.findAuthWork(obj)
+    albumBriefDetailInfos.value = res.data.albumBriefDetailInfos
+  } catch (error) {
+    console.log("获取介绍信息失败");
+  }
+}
+
+const page = ref<number>(1)
+const sameWorkList = ref<SameWorkItemInfo[]>([])
+// 相似作品
+const getSameWork = async (obj:{kw:string,page?:number,rows?:number,device?:string,condition?:string,spellchecker?:boolean,core?:string}) => {
+  try {
+    const res = await detailApi.findSameWork(obj)
+    sameWorkList.value = res.data.album.docs
+  } catch (error) {
+    console.log("获取介绍信息失败");
+  }
+}
+const changeHandler = () => {
+  page.value = page.value + 1
+  console.log(page.value);
+  getSameWork({ page: page.value,kw:title})
+}
+// 猜你喜欢
+const likeList = ref<LikeWorkItemInfo[]>([])
+const getGuessLike = async () => {
+  try {
+    const res = await detailApi.findLike({})
+    likeList.value = res.data.albums
+  } catch (error) {
+    console.log("获取介绍信息失败");
+  }
+}
+// 挂载请求数据
+onMounted(async () => {
+  getDesc()
+  getList({flag:flag.value,albumId:id})
+  getComment()
+  window.addEventListener("scroll", scrolling);
+  getGuessLike()
+  
+})
+onUnmounted(() => {
+  window.removeEventListener("scroll", scrolling);
+})
 
 </script>
 
@@ -80,16 +398,14 @@ onMounted(() => {
   height: 100%;
   font-size: 14px;
 
-  .header {
-    height: 50px;
-    padding: 15px 15px 5px 15px;
-    background-color: pink;
-  }
-
   .content {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
+
+    .grey {
+      color: #7e8c8d;
+    }
 
     // 第一个页面
     .desc {
@@ -112,13 +428,13 @@ onMounted(() => {
           width: 200px;
           height: 110rpx;
 
-          .grey {
-            color: #7e8c8d;
-          }
-
           .title {
             font-size: 20px;
             font-weight: 600;
+          }
+
+          .auth {
+            display: flex;
           }
 
           .auth>img {
@@ -129,8 +445,12 @@ onMounted(() => {
           }
 
           .auth>span {
-            display: inline-block;
+            margin-top: 5px;
+            display: block;
             height: 34px;
+            line-height: 34px;
+            font-size: 14px;
+            overflow: hidden;
           }
 
           .count {
@@ -161,6 +481,7 @@ onMounted(() => {
         font-size: 14px !important;
         line-height: 21px !important;
         margin: 0;
+        width: 100%;
       }
 
       .transparent {
@@ -179,9 +500,10 @@ onMounted(() => {
         right: 0;
         bottom: 0;
         border-bottom: #fff;
-        height:40px;
+        height: 40px;
         line-height: 40px;
         background-color: #fff;
+
         .rotate-90 {
           transform: rotate(90deg);
         }
@@ -226,10 +548,423 @@ onMounted(() => {
         }
       }
 
+      .localBtn {
+        margin: 20px auto 0;
+        width: 110px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        background-color: #ff4646;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 20px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 20px;
+      }
     }
 
     // 第二个页面
-    
+    .courseList {
+      margin-top: 20px;
+      padding: 10px;
 
+      .courseTop {
+        display: flex;
+        justify-content: space-between;
+
+        .courseLeft {
+          font-size: 18px;
+          font-weight: 700;
+        }
+
+        .courseRight {
+          font-size: 14px;
+        }
+      }
+
+      .courseMiddle {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f5;
+
+        .leftMiddle {
+          .titleMiddle {
+            font-size: 16px;
+          }
+
+          .descMiddle {
+            font-size: 12px;
+            padding-left: 7px;
+            padding-top: 7px;
+
+            span {
+              margin-right: 40px;
+            }
+          }
+        }
+
+        .rightMiddle {
+          font-size: 30px;
+          text-align: center;
+        }
+      }
+
+      .courseMore {
+        color: #ff4646;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+        height: 50px;
+        line-height: 50px;
+      }
+    }
+
+    // 第三个页面
+    .comment {
+      padding: 10px 10px 0;
+
+      .comTitle {
+        font-family: PingFangSC-Semibold;
+        font-size: 18px;
+        line-height: 20px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .comContext {
+        position: relative;
+        overflow: hidden;
+
+        li {
+          margin-top: 10px;
+          display: flex;
+        }
+
+        .comLeft {
+          width: 40px;
+          margin-right: 10px;
+
+          img {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+          }
+        }
+
+        .comRight {
+          width: 280px;
+
+          .comTop {
+            line-height: 20px;
+            margin-bottom: 4px;
+            color: #666;
+            display: inline-block;
+          }
+
+          .comMiddle {
+            text-align: justify;
+            color: #333;
+            line-height: 23.5px;
+
+            :deep(.emoji) {
+              width: 16px;
+              height: 16px;
+            }
+          }
+
+          .comBottom {
+            display: flex;
+            justify-content: space-between;
+            line-height: 18px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+          }
+        }
+
+        .comBom {
+          .transparent {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 40px;
+            height: 100px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+          }
+
+          .showMore {
+            text-align: center;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-bottom: #fff;
+            height: 40px;
+            line-height: 40px;
+            background-color: #fff;
+
+            .rotate-90 {
+              transform: rotate(90deg);
+            }
+          }
+        }
+      }
+
+      .moreCom {
+        color: #ff4646;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+        height: 50px;
+        line-height: 50px;
+        margin-top: 10px;
+      }
+    }
+
+    .album {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+
+      .album-item {
+        width: 103.5px;
+        position: relative;
+        margin-bottom: 5px;
+
+        .top {
+          width: 103.5px;
+          height: 103.5px;
+          border-radius: 3%;
+        }
+
+        .center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 73px;
+
+          .care {
+            width: 15px;
+            height: 15px;
+            line-height: 15px;
+            text-align: center;
+            background-color: #62626477;
+            border-radius: 50%;
+            overflow: hidden;
+            padding-right: 2px;
+            margin-right: 5px;
+            margin-left: 3px;
+            color: #fff;
+
+          }
+
+          .text {
+            color: rgb(255, 255, 255);
+            font-weight: 700;
+            font-size: 12px;
+          }
+        }
+
+        .bottom {
+          overflow: hidden;
+          display: -ms-flexbox;
+          display: flex;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .album-ver {
+
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      .album-item {
+        width: 103.5px;
+        position: relative;
+        margin-bottom: 5px;
+
+        .top {
+          width: 103.5px;
+          height: 103.5px;
+          border-radius: 3%;
+        }
+
+        .center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 73px;
+
+          .care {
+            width: 15px;
+            height: 15px;
+            line-height: 15px;
+            text-align: center;
+            background-color: #62626477;
+            border-radius: 50%;
+            overflow: hidden;
+            padding-right: 2px;
+            margin-right: 5px;
+            margin-left: 3px;
+            color: #fff;
+
+          }
+
+          .text {
+            color: rgb(255, 255, 255);
+            font-weight: 700;
+            font-size: 12px;
+          }
+        }
+
+        .bottom {
+          overflow: hidden;
+          display: -ms-flexbox;
+          display: flex;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .refresh {
+      text-align: center;
+
+      .refreshBtn {
+        width: 90px;
+        height: 30px;
+        text-align: center;
+        font-size: 12px;
+      }
+    }
+
+    .hotspot {
+      padding: 15px 15px 0;
+      background-color: #fff;
+
+      .hot {
+        color: #333;
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .item {
+        padding: 15px 0;
+        display: flex;
+        border-bottom: 1px solid #f3f4f5;
+
+        .img {
+          width: 70px;
+          height: 70px;
+          margin-right: 15px;
+          overflow: hidden;
+          -ms-flex-negative: 0;
+          flex-shrink: 0;
+          position: relative;
+
+          img {
+            width: 70px;
+            height: 70px;
+          }
+
+          .caret {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 70px;
+            font-size: 35px;
+            background: rgba(0, 0, 0, .3);
+            color: #fff;
+          }
+        }
+
+        .right {
+          h4 {
+            width: 250px;
+            margin: 5px 0;
+            color: #40404c;
+            height: 20px;
+            line-height: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .descMiddle {
+            margin-bottom: 5px;
+            width: 250px;
+            font-size: 13px;
+            color: #999;
+            height: 20px;
+            line-height: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .decsBottom {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #999;
+
+            span {
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+    }
   }
-}</style>
+
+  .footer {
+    position: relative;
+    width: 375px;
+    height: 160px;
+    text-align: center;
+
+    .bg-img {
+      width: 100%;
+      height: 180px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: -1;
+    }
+
+    .footer-logo {
+      width: 120px;
+      margin: 20px auto 0;
+    }
+
+    .copyright {
+      font-size: 12px;
+      width: 100%;
+      padding: 0;
+    }
+  }
+}
+</style>
