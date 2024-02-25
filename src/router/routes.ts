@@ -53,7 +53,7 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/login/index.vue'),
   },
   {
-    path: '/detail',
+    path: '/detail/:id',
     component: () => import('@/views/detail/index.vue'),
   },
   {
