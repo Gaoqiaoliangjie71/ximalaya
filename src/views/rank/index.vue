@@ -1,60 +1,140 @@
 <template>
   <div class="rank">
-    <van-tabs v-model:active="active">
-      <van-tab title="全站">
-        <van-sidebar v-model="actt">
-          <van-sidebar-item title="热播" />
-          <van-sidebar-item title="新品" />
-          <van-sidebar-item title="口碑" />
-        </van-sidebar>
-        <div class="list">
-          <div class="item">
-            <div class="no">1</div>
-            <div class="img">
-              <img src="../../static/icon/Snipaste01.png" alt="" />
-            </div>
-            <div class="detail">
-              <div class="name">
-                一人一驴一人一驴一人一驴一人一驴一人一驴一人一驴一人一驴一人一驴
-              </div>
-              <div class="word1">最近一周更新</div>
-              <div class="word2">
-                <van-icon name="play-circle-o" />
-                <div class="times1">1543.34万</div>
-                <van-icon name="service-o" />
-                <div class="times2">180</div>
+    <van-tabs v-model:active="active" sticky>
+      <van-tab v-for="item in tabLists" :id="item.id" :title="item.name">
+        <div class="tab_content">
+          <div class="left">
+            <van-sidebar v-model="actt">
+              <van-sidebar-item
+                v-for="item2 in item.tabWraps"
+                :id="item2.id"
+                :title="item2.name"
+              >
+              </van-sidebar-item>
+            </van-sidebar>
+          </div>
+          <div class="right">
+            <div class="categoryList">
+              <div
+                v-for="item3 in rankListData.rankList"
+                :id="item3.id"
+                class="categoryItem"
+              >
+                <div class="categoryItem-content">
+                  <img :src="`http://fdfs.xmcdn.com/${item3.cover}`" alt="" />
+                  <div class="article-description">
+                    <div class="title">
+                      {{ item3.albumTitle }}
+                    </div>
+                    <div class="data-message">
+                      <div class="play-message">
+                        <van-icon name="play-circle-o" />
+                        <div class="play-counts">{{ item3.playCount }}</div>
+                      </div>
+                      <div class="update-time">
+                        {{ item3.lastUptrackAtStr }}更新
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </van-tab>
-      <van-tab title="小说">内容 2</van-tab>
-      <van-tab title="相声评书">内容 3</van-tab>
-      <van-tab title="儿童">内容 4</van-tab>
     </van-tabs>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-<<<<<<< HEAD
-  name: 'Home',
-
-=======
   name: "Rank",
->>>>>>> e4f47490609e32e5ef51c5f2018b3dce3832428b
 };
 </script>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRankStore } from "../../stores/rank";
+import { storeToRefs } from "pinia";
 // import type { SidebarProps, SidebarItemProps } from "vant";
-
+const rankStore = useRankStore();
 const active = ref(0);
 const actt = ref(0);
+
+const { tabLists, rankListData, rankingId } = storeToRefs(rankStore);
+onMounted(() => {
+  rankStore.getTabLists();
+  rankStore.getRankListData();
+
+  // console.log(tabLists);
+});
+// const changeRankingId = (rankingid: number) => {
+//   rankingId = rankingid;
+// };
 </script>
 
 <style lang="less" scoped>
-.item {
-  border-bottom: 1px solid gray;
+// .item {
+//   border-bottom: 1px solid gray;
+// }
+.tab_content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  // border: 1px solid red;
+}
+.left {
+  width: 22%;
+  // border: 1px solid green;
+}
+.right {
+  width: 78%;
+  // border: 1px solid blue;
+}
+
+.categoryList {
+  .categoryItem {
+    .categoryItem-content {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 80px;
+      border: 1px solid red;
+      img {
+        margin-left: 8px;
+        border-radius: 4px;
+        width: 70px;
+      }
+      .article-description {
+        margin: 0 20px 2px 10px;
+        height: 70px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        // margin-top: -10px;
+        // border: 2px solid yellow;
+        .title {
+          font-size: 16px;
+          font-weight: 600;
+          // border: 2px solid blue  .data-message {
+          font-size: 12px;
+          color: #999;
+          display: flex;
+          // border: 1px solid red;
+          .play-message {
+            display: flex;
+            align-items: center;
+            // border: 1px solid blue;
+            .play-counts {
+              margin-left: 6px;
+              margin-bottom: 2px;
+            }
+          }
+          .update-time {
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

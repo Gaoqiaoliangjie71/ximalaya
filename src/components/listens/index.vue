@@ -2,17 +2,25 @@
   <a class="listens-list">
     <div class="post">
       <img
-        src="//imagev2.xmcdn.com/storages/b852-audiofreehighqps/F0/C4/GMCoOR8Io4MqAAaN9QJDxSiJ.jpg!op_type=3&columns=144&rows=144&magick=webp"
+        :src="
+          marking === 'ting'
+            ? baseUrl + (item && item.albumCoverPath)
+            : info && info.coverPath
+        "
         alt=""
       />
       <div class="mask">
         <van-icon name="play-circle-o" size="20" />
-        1262.86万
+<<<<<<< HEAD
+        {{ marking === "ting" ? item && item.albumPlayCount : info && info.playCount }}
+=======
+        {{ marking === "ting" ? item && item.albumPlayCount :info && info.playCount }}
+>>>>>>> yenana
       </div>
     </div>
     <div class="texts">
       <p>
-        【免费】荒岛求生|我和美女的超级荒岛|末日|野外探险|穿越冒险|末世|AI多播
+        {{ marking === "ting" ? item && item.intro : info && info.title }}
       </p>
     </div>
   </a>
@@ -23,7 +31,18 @@ export default defineComponent({
   name: "Listens",
 });
 </script>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+//传递过来的数据渲染
+import type { albumData, limit } from "../../api/home";
+
+//图片地址
+const baseUrl = "https://imagev2.xmcdn.com/";
+const props = defineProps<{
+  item: albumData;
+  info: limit;
+  marking: string;
+}>();
+</script>
 
 <style lang="less" scoped>
 .listens-list {
