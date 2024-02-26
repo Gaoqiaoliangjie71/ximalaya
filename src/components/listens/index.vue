@@ -12,9 +12,13 @@
       <div class="mask">
         <van-icon name="play-circle-o" size="20" />
 <<<<<<< HEAD
+<<<<<<< HEAD
         {{ marking === "ting" ? item && item.albumPlayCount : info && info.playCount }}
 =======
         {{ marking === "ting" ? item && item.albumPlayCount :info && info.playCount }}
+>>>>>>> yenana
+=======
+        {{ marking === "ting" ? item && item.albumPlayCount : info && info.playCount }}
 >>>>>>> yenana
       </div>
     </div>
