@@ -15,7 +15,12 @@
     </div>
 
     <!-- 轮播图 -->
-    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="transparent">
+    <van-swipe
+      class="my-swipe"
+      :autoplay="3000"
+      indicator-color="transparent"
+      @click="swiper"
+    >
       <van-swipe-item>
         <img
           src="http://fdfs.xmcdn.com/storages/e6f1-audiofreehighqps/E2/BA/GMCoOSAHjVI3AAJDaQHpJk0H.jpg"
@@ -38,36 +43,36 @@
 
     <!-- 导航栏 -->
     <div class="nav">
-      <a class="nav-list" href="javascript:;">
+      <router-link to="../rank" class="nav-list" href="javascript:;">
         <img
           src="https://fdfs.xmcdn.com/group56/M09/3B/BD/wKgLgFyQujLCAVYRAAAuwA7DZMg198.png"
           alt=""
         />
         <text>排行榜</text>
-      </a>
-      <a class="nav-list" href="javascript:;">
+      </router-link>
+      <router-link to="../category" class="nav-list" href="javascript:;">
         <img
           src="https://fdfs.xmcdn.com/group60/M02/18/F4/wKgLeVziZxHRlc-lAAAO9ZkPU-I489.png"
           alt=""
         />
         <text>分类</text>
-      </a>
-      <a class="nav-list" href="javascript:;">
+      </router-link>
+      <router-link to="../listen" class="nav-list" href="javascript:;">
         <img
           src="https://fdfs.xmcdn.com/group57/M0A/3B/D0/wKgLgVyQuqWRZsJtAAAnr8tg4rs307.png"
           alt=""
         />
         <text>电台</text>
-      </a>
+      </router-link>
     </div>
 
     <!-- 广告 -->
-    <a class="advertising" href="javascript:;">
+    <router-link to="../login" class="advertising" href="javascript:;">
       <img
         src="//imagev2.xmcdn.com/group61/M0A/CD/B2/wKgMZl0W1legiUgkAACPrBBFcJ4381.png"
         alt=""
       />
-    </a>
+    </router-link>
 
     <!-- 新人必听 -->
     <div class="listens-title">新人必听</div>
@@ -159,9 +164,14 @@ const hotDatas = ref();
 //搜索双向数据绑定
 const str = ref("");
 
+//轮播图跳转登录页
+const swiper = () => {
+  router.push("../login");
+};
+
 //登录跳转
 const toLogin = () => {
-  router.push("../search");
+  router.push("../login");
 };
 
 //搜索跳转
@@ -176,12 +186,12 @@ const listener = (id: string) => {
 
 //限时免费跳转
 const free = (id: string) => {
-  router.push(`../rank?id=${id}`);
+  router.push(`../detail/${id}`);
 };
 
 //今日热点跳转
 const hots = (id: string) => {
-  router.push(`../rank?id=${id}`);
+  router.push(`../detail/${id}`);
 };
 
 //新人必听 发请求获取数据
@@ -195,7 +205,7 @@ const findListen = async () => {
   }
 };
 
-//限时免费 今日热点  
+//限时免费 今日热点
 const findLimitOrHot = async () => {
   try {
     const result = await home.getLimitOrHot();
@@ -368,4 +378,3 @@ onMounted(() => {
   }
 }
 </style>
- 
