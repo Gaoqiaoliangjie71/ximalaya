@@ -2,12 +2,12 @@
   <div class="container">
     <div class="fixed">
       <div class="header ">
-        <div class="back">
+        <div class="back" @click="toCategory">
           <van-icon name="arrow-left" />
           {{ head }}
         </div>
 
-        <div class="login">登 录</div>
+        <div class="login" @click="toLogin">登 录</div>
       </div>
       <van-tabs @change="changeTabs" v-model:active="active" :ellipsis="false">
         <div class="wrapper">
@@ -27,7 +27,8 @@
               <div class="wrapper1" ref="scroll">
                 <div class="wrapper1-content">
                   <div :class="['wrapper1-item', 'tabs-item', c2Index === index ? 'active' : '']"
-                    v-for="(info, index) in item.metadataValues[0].metadataValues" :key="index" @click="c2Handle(index,info.name)">
+                    v-for="(info, index) in item.metadataValues[0].metadataValues" :key="index"
+                    @click="c2Handle(index, info.name)">
                     {{ info.name }}
                   </div>
                 </div>
@@ -37,23 +38,25 @@
 
             </div>
             <div class="category-list">
-              <div class="category-item" v-for="item in albumsList" :key="item.albumId">
-                <div class="img">
-                  <img :src="`https://imagev2.xmcdn.com/${item.albumCoverPath}`" alt="">
-                </div>
-                <div class="content">
-                  <div class="title">{{ item.albumTitle }}</div>
-                  <div class="detail">
-                    {{ item.intro }}
+              <div class="category-content">
+                <div class="category-item" @click="toDetail(item.albumId)" v-for="item in albumsList" :key="item.albumId">
+                  <div class="img">
+                    <img :src="`https://imagev2.xmcdn.com/${item.albumCoverPath}`" alt="">
                   </div>
-                  <div class="bottom">
-                    <div class="play cc">
-                      <img src="../../../assets/icon/sound.png" alt="">
-                      {{ item.albumTrackCount }}
+                  <div class="content">
+                    <div class="title">{{ item.albumTitle }}</div>
+                    <div class="detail">
+                      {{ item.intro }}
                     </div>
-                    <div class="listen cc">
-                      <van-icon name="service-o" />
-                      {{ (item.albumPlayCount / 100000000).toFixed(2) }}亿
+                    <div class="bottom">
+                      <div class="play cc">
+                        <img src="../../../assets/icon/sound.png" alt="">
+                        {{ item.albumTrackCount }}
+                      </div>
+                      <div class="listen cc">
+                        <van-icon name="service-o" />
+                        {{ (item.albumPlayCount / 100000000).toFixed(2) }}亿
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -182,8 +185,8 @@ async function getCategoryListDetail(metadataValues: string) {
 }
 
 //title 是tabs选中的内容
-function getList(title: string,c2Title?:string) {
-  if(c2Title){
+function getList(title: string, c2Title?: string) {
+  if (c2Title) {
     const metadataValues: string = `${title},${c2Title}`
     //重新获取列表
     getCategoryListDetail(metadataValues)
@@ -245,7 +248,7 @@ const cate2Title = ref('')
 function changeSortIndex(e: any) {
   sortIndex.value = e.target.dataset.index / 1
 
-  if(cate2Title.value){
+  if (cate2Title.value) {
     getList(titleStr.value, cate2Title.value)
     return
   }
@@ -298,7 +301,7 @@ function clickCategory1(name: number, title: string) {
 
   //如果点击的是全部
   if (name === 1) {
-    
+
     getList(title)
     return
   }
@@ -355,12 +358,12 @@ function category2Handle(id: number, name: string) {
 
   //如果level为2
   active.value = id
-  clickCategory1(id,name)
+  clickCategory1(id, name)
 
 
 }
 
-function c2Handle(index: number,c2Title:string) {
+function c2Handle(index: number, c2Title: string) {
 
 
   c2Index.value = index
@@ -371,6 +374,25 @@ function c2Handle(index: number,c2Title:string) {
   getList(category2Title.value, c2Title)
 
 }
+
+//跳转详情页
+function toDetail(id: number) {
+  router.push(`/detail/${id}`)
+}
+
+//返回分类页
+function toCategory(){
+  router.push(`/category`)
+}
+
+//去登陆页
+function toLogin(){
+  router.push(`/login`)
+}
+
+
+
+
 
 
 
@@ -515,7 +537,14 @@ function c2Handle(index: number,c2Title:string) {
 }
 
 .category-list {
+  height: 1212px;
   margin-left: 10px;
+  // overflow-y: scroll;
+  // border: 1px solid red;
+  // .category-content{
+  // border: 1px solid green;
+
+  // }
 }
 
 .category-item {
