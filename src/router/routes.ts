@@ -57,12 +57,8 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/login/index.vue'),
   },
   {
-<<<<<<< HEAD
-    path: '/detail',
-=======
     // 跳转时传入作品id（albumId/id）
     path: '/detail/:id',
->>>>>>> d9d1c756fada9312c9b68f1a57302afb2bc81683
     component: () => import('@/views/detail/index.vue'),
   },
   {
