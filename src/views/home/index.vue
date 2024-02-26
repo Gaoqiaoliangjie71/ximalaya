@@ -307,7 +307,6 @@ onMounted(() => {
       background-color: #fa2800;
     }
   }
-<<<<<<< HEAD
 
   .foot {
     width: 100%;
@@ -328,7 +327,5 @@ onMounted(() => {
       font-weight: 400;
     }
   }
-=======
->>>>>>> yxk
 }
 </style>
