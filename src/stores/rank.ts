@@ -32,10 +32,11 @@ export const useRankStore = defineStore({
         console.log(error);
       }
     },
-    async getRankListData() {
+    async getRankListData(rankingid?: any) {
       try {
+        rankingid && (this.rankingId = rankingid);
         const res = await rankApi.findRankList(this.rankingId);
-        console.log(res.data);
+        // console.log(res.data);
 
         this.rankListData.rankList = res.data.rankList[0].albums;
       } catch (error) {
