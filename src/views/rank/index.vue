@@ -1,13 +1,13 @@
 <template>
   <div class="rank">
     <van-tabs v-model:active="active" sticky>
-      <van-tab v-for="item in tabLists" :id="item.id" :title="item.name">
+      <van-tab v-for="item in tabLists" :key="item.id" :title="item.name">
         <div class="tab_content">
           <div class="left">
             <van-sidebar v-model="actt">
               <van-sidebar-item
                 v-for="item2 in item.tabWraps"
-                :id="item2.id"
+                :key="item2.id"
                 :title="item2.name"
                 @click="changeRankingId(item2)"
               >
@@ -18,26 +18,28 @@
             <div class="categoryList">
               <div
                 v-for="item3 in rankListData.rankList"
-                :id="item3.id"
+                :key="item3.id"
                 class="categoryItem"
               >
-                <div class="categoryItem-content">
-                  <img :src="`http://fdfs.xmcdn.com/${item3.cover}`" alt="" />
-                  <div class="article-description">
-                    <div class="title">
-                      {{ item3.albumTitle }}
-                    </div>
-                    <div class="data-message">
-                      <div class="play-message">
-                        <van-icon name="play-circle-o" />
-                        <div class="play-counts">{{ item3.playCount }}</div>
+                <router-link :to="{ path: '/detail', query: { id: item3.id } }"
+                  ><div class="categoryItem-content">
+                    <img :src="`http://fdfs.xmcdn.com/${item3.cover}`" alt="" />
+                    <div class="article-description">
+                      <div class="title">
+                        {{ item3.albumTitle }}
                       </div>
-                      <div class="update-time">
-                        {{ item3.lastUptrackAtStr }}更新
+                      <div class="data-message">
+                        <div class="play-message">
+                          <van-icon name="play-circle-o" />
+                          <div class="play-counts">{{ item3.playCount }}</div>
+                        </div>
+                        <div class="update-time">
+                          {{ item3.lastUptrackAtStr }}更新
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </div></router-link
+                >
               </div>
             </div>
           </div>
