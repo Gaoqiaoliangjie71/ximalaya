@@ -17,7 +17,7 @@
           <van-cell :title="item.title" is-link to="index" @click="toList(item.id,item.title)"/>
           <!-- 小标题下的内容 -->
           <div class="item-content">
-            <div class="item" v-for="info in item.subCategories[0]?.metadataValues" :key="info.id">{{ info.name }}</div>
+            <div class="item" v-for="info in item.subCategories[0]?.metadataValues" :key="info.id" @click="toListLevel2(item.id,info.id,item.title,info.name)">{{ info.name }}</div>
           </div>
         </div>
       </div>
@@ -149,6 +149,12 @@ function getScroll() {
 function toList(id : number,title:string){
   router.push(`/category/list/${id}/${title}`)
 }
+
+//点击二级分类跳转列表页
+function toListLevel2(category1Id: number, category2Id: number,title: string,title2: string){
+  router.push(`/category/list/${category1Id}_${category2Id}/${title}_${title2}`)
+}
+
 
 
 </script>
