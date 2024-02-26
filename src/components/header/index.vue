@@ -17,7 +17,8 @@ export default defineComponent({
   name: "Header",
 });
 </script>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <style lang="less" scoped>
 .w {
