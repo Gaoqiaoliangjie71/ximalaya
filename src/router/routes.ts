@@ -42,7 +42,11 @@ export const staticRoutes: Array<RouteRecordRaw> = [
   },
   {
     path: '/category',
-    component: () => import('@/views/category/index.vue'),
+    component: () => import('@/views/category/index.vue')
+  },
+  {
+    path: '/category/list/:id/:title',
+    component: () => import('@/views/category/list/index.vue'),
   },
   {
     path: '/listen',
@@ -53,8 +57,18 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/login/index.vue'),
   },
   {
+<<<<<<< HEAD
     path: '/detail',
+=======
+    // 跳转时传入作品id（albumId/id）
+    path: '/detail/:id',
+>>>>>>> d9d1c756fada9312c9b68f1a57302afb2bc81683
     component: () => import('@/views/detail/index.vue'),
+  },
+  {
+    // 打开APP跳出的页面
+    path: '/open',
+    component: () => import('@/views/open/index.vue'),
   },
   {
     path: '/search',
