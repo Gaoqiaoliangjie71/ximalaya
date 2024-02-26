@@ -75,6 +75,10 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/search/index.vue'),
   },
   {
+    path: '/searchList',
+    component: () => import('@/views/searchList/index.vue'),
+  },
+  {
     path: '/:pathMatch(.*)',
     name: 'Any',
     component: () => import('@/views/error/404.vue'),
