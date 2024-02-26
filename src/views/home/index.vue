@@ -307,7 +307,6 @@ onMounted(() => {
       background-color: #fa2800;
     }
   }
-
   .foot {
     width: 100%;
     height: 180px;
