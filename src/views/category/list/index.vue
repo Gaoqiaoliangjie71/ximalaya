@@ -9,7 +9,7 @@
 
         <div class="login">登 录</div>
       </div>
-      <van-tabs @change="changeTabs" v-model:active="active">
+      <van-tabs @change="changeTabs" v-model:active="active" :ellipsis="false">
         <div class="wrapper">
           <van-tab v-for="( item, index ) in  category1List " :key="item.id" :title="item.name" :name="item.id">
             <div class="tabs" @click="changeSortIndex">
@@ -22,12 +22,12 @@
                 <span v-else>收起</span>
               </div>
             </div>
-            <div class="tabs" v-if="isSelect && index !== 0" @click="changeSortIndex2">
+            <!-- 点击筛选出现的列表 -->
+            <div class="tabs" v-if="isSelect && index !== 0">
               <div class="wrapper1" ref="scroll">
                 <div class="wrapper1-content">
                   <div :class="['wrapper1-item', 'tabs-item', c2Index === index ? 'active' : '']"
-                    v-for="(info, index) in item.metadataValues[0].metadataValues[0].metadataValues[0].metadataValues"
-                    :key="index" @click="c2Handle(index)">
+                    v-for="(info, index) in item.metadataValues[0].metadataValues" :key="index" @click="c2Handle(index,info.name)">
                     {{ info.name }}
                   </div>
                 </div>
@@ -97,7 +97,7 @@ import type { subCategoriesData, AlbumsData } from '@/api/category'
 
 const head = computed({
   get() {
-    return router.currentRoute.value.params.title
+    return router.currentRoute.value.params.title.split('_').pop()
   },
   set() { }
 })
@@ -107,6 +107,9 @@ const titleStr = ref('')
 
 const active = ref(0);
 
+//tabs 栏默认选中的
+const defaultActive = 1
+
 const showCategory2 = ref(false);
 
 const c2Index = ref(0)
@@ -115,17 +118,30 @@ const c2Index = ref(0)
 //获得分类列表
 //#region
 onMounted(() => {
-
-  getCategoryList()
+  getCategoryListMount()
 
 })
+
+async function getCategoryListMount() {
+  //等待获取完分类列表
+  await getCategoryList()
+
+  const { id: idParams, title: titleParams } = router.currentRoute.value.params
+  if (idParams.split('_').length > 1) {
+    // 
+    const id = idParams.split('_')[1] / 1
+    const title = titleParams.split('_')[1]
+
+    category2Handle(id, title)
+  }
+}
 
 const category1List = ref<subCategoriesData[]>([])
 
 //获取分类列表的功能函数
 async function getCategoryList() {
   try {
-    const id = router.currentRoute.value.params.id
+    const id = router.currentRoute.value.params.id.split('_')[0]
     const result = await categoryApi.findCategoryList(id)
 
     result.data.metadata[0].metadataValues.unshift({
@@ -149,7 +165,7 @@ const pageSize = ref(10)
 const albumsList = ref<AlbumsData[]>([])
 //获取列表的功能函数
 async function getCategoryListDetail(metadataValues: string) {
-  const id = router.currentRoute.value.params.id
+  const id = router.currentRoute.value.params.id.split('_')[0]
   try {
     const result = await categoryApi.findCategoryListDetail({
       pageNum: pageNum.value,
@@ -165,17 +181,48 @@ async function getCategoryListDetail(metadataValues: string) {
   }
 }
 
-function getList(title: string) {
-  //如果点击的是全部
-  if (title === '全部') {
-    getCategoryListDetail('')
+//title 是tabs选中的内容
+function getList(title: string,c2Title?:string) {
+  if(c2Title){
+    const metadataValues: string = `${title},${c2Title}`
+    //重新获取列表
+    getCategoryListDetail(metadataValues)
     return
   }
 
-  const metadataValues: string = `${head.value},${title}`
+  //如果level = 1 
+  if (level === 1) {
+    //如果点击的是全部
+    if (title === '全部') {
+      getCategoryListDetail('')
+      return
+    }
 
+    const metadataValues: string = `${head.value},${title}`
+
+    //重新获取列表
+    getCategoryListDetail(metadataValues)
+    return
+  }
+
+  //如果level 不为1
+  // 如果点击的是全部
+  if (title === '全部') {
+    const metadataValues: string = `${head.value}`
+    //重新获取列表
+    getCategoryListDetail(metadataValues)
+    return
+  }
+
+  // level = 2 ，点击的不是分类
+  const metadataValues: string = `${head.value},${title}`
   //重新获取列表
   getCategoryListDetail(metadataValues)
+
+
+
+
+
 }
 //#endregion
 
@@ -190,48 +237,139 @@ function changeSelect() {
 
 //排序
 const sortIndex = ref(1)
-const sortIndex2 = ref(0)
+
+
+const cate2Title = ref('')
 
 //点击第一行排序的回调函数
 function changeSortIndex(e: any) {
   sortIndex.value = e.target.dataset.index / 1
 
+  if(cate2Title.value){
+    getList(titleStr.value, cate2Title.value)
+    return
+  }
+
   //重新获取列表数据
   getList(titleStr.value)
 }
 
-//点击第二行排序的回调函数
-function changeSortIndex2(e: any) {
-  sortIndex2.value = e.target.dataset.index / 1
-}
 
-//点击tab栏和tab栏激活改变的回调
-function changeTabs(_: number, title: string) {
 
-  // 初始化数据
-  sortIndex.value = 1
-  sortIndex2.value = 0
+// van-tabs操作
+//#region
 
-  //设置一个ref sort的时候用
+let level = 1
+
+//name为一级分类的id  title为tabs栏的内容(音乐音效等)
+function clickCategory1(name: number, title: string) {
+  //判断展示的是否为一级分类
+  //如果点击的是全部，不跳转至二级分类
+  //反之tabs栏改变为对应的二级分类
+  if (level === 1 && name === 1) {
+    //设置一个ref sort的时候用
+    titleStr.value = title
+
+    getList(title)
+    return
+  }
+
+  if (level === 1) {
+    const list = category1List.value.find(item => item.id === name).metadataValues[0].metadataValues
+    list.unshift({
+      "id": 1,
+      "displayName": "全部",
+      "name": "全部",
+      "metadataValues": []
+    })
+    category1List.value = list
+
+    //获取对应的列表
+    //设置一个ref sort的时候用
+    titleStr.value = title
+    getList(title)
+
+    //级别改为2级
+    level = 2
+    return
+  }
+
+  //如果level = 2
+
+  //如果点击的是全部
+  if (name === 1) {
+    
+    getList(title)
+    return
+  }
+
+  //level = 2 并且不是全部
+
   titleStr.value = title
-
   getList(title)
 
 }
+
+//二级分类的Title
+const category2Title = ref('')
+
+//点击tab栏和tab栏激活改变的回调
+function changeTabs(name: number, title: string) {
+
+  // 初始化数据
+  sortIndex.value = 1
+  c2Index.value = 0
+
+  // name (一级分类的id)
+
+  //如果点击的是一级id
+  if (level === 1) {
+    clickCategory1(name, title)
+    return
+  }
+
+  //如果点击的是二级标题
+  category2Title.value = title
+
+  clickCategory1(name, title)
+
+}
+//#endregion
+
+
 
 //点击展开的目录列表的回调
 function category2Handle(id: number, name: string) {
 
   showCategory2.value = false
-  active.value = id
 
-  //重新获取列表
-  getList(name)
+  //如果是level = 1
+  // active 变为1
+  //获取对应列表
+
+  if (level === 1) {
+    active.value = defaultActive
+    clickCategory1(id, name)
+    return
+  }
+
+  //如果level为2
+  active.value = id
+  clickCategory1(id,name)
+
 
 }
 
-function c2Handle(index: number) {
+function c2Handle(index: number,c2Title:string) {
+
+
   c2Index.value = index
+
+  cate2Title.value = c2Title
+
+  //获取列表
+  getList(category2Title.value, c2Title)
+
 }
 
 
@@ -266,6 +404,7 @@ function c2Handle(index: number) {
 
 :deep(.van-tabs__wrap) {
   border-bottom: 1px solid #bbb;
+  padding-right: 51px;
 }
 
 
