@@ -34,8 +34,8 @@ import type { albumData, limit } from "../../api/home";
 //图片地址
 const baseUrl = "https://imagev2.xmcdn.com/";
 const props = defineProps<{
-  item: albumData;
-  info: limit;
+  item?: albumData;
+  info?: limit;
   marking: string;
 }>();
 </script>
