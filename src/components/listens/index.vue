@@ -1,14 +1,10 @@
 <template>
   <a class="listens-list">
     <div class="post">
-      <img
-        :src="
-          marking === 'ting'
-            ? baseUrl + (item && item.albumCoverPath)
-            : info && info.coverPath
-        "
-        alt=""
-      />
+      <img :src="marking === 'ting'
+          ? baseUrl + (item && item.albumCoverPath)
+          : info && info.coverPath
+        " alt="" />
       <div class="mask">
         <van-icon name="play-circle-o" size="20" />
         {{ marking === "ting" ? item && item.albumPlayCount : info && info.playCount }}
@@ -34,8 +30,8 @@ import type { albumData, limit } from "../../api/home";
 //图片地址
 const baseUrl = "https://imagev2.xmcdn.com/";
 const props = defineProps<{
-  item: albumData;
-  info: limit;
+  item?: albumData;
+  info?: limit;
   marking: string;
 }>();
 </script>
@@ -45,6 +41,7 @@ const props = defineProps<{
   width: 115px;
   height: 168px;
   display: block;
+
   .post {
     width: 115px;
     height: 115px;
@@ -55,21 +52,21 @@ const props = defineProps<{
       height: 115px;
       border-radius: 4px;
     }
+
     .mask {
       position: absolute;
       left: 0;
       bottom: 0;
-      background-image: linear-gradient(
-        180deg,
-        rgba(3, 3, 3, 0) 9%,
-        rgba(0, 0, 0, 0.58) 100%
-      );
+      background-image: linear-gradient(180deg,
+          rgba(3, 3, 3, 0) 9%,
+          rgba(0, 0, 0, 0.58) 100%);
       width: 100%;
       height: 28px;
       line-height: 34px;
       border-radius: 0 0 4px 4px;
       font-size: 14px;
       color: #fff;
+
       .van-icon {
         .van-badge__wrapper::before {
           width: 20px;
@@ -78,6 +75,7 @@ const props = defineProps<{
       }
     }
   }
+
   .texts {
     padding: 6px 0 11px 0;
     font-size: 13px;
@@ -88,6 +86,7 @@ const props = defineProps<{
     box-sizing: border-box;
     color: #333;
     letter-spacing: 0.34px;
+
     p {
       margin: 0;
       overflow: hidden;
