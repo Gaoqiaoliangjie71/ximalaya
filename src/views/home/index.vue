@@ -181,7 +181,7 @@ const searchs = (str: string) => {
 
 //新人必听跳转
 const listener = (id: string) => {
-  router.push(`../listen?id=${id}`);
+  router.push(`../detail/${id}`);
 };
 
 //限时免费跳转
