@@ -10,75 +10,49 @@
         type="text"
         placeholder="搜索"
         v-model="str"
-        @change="searchs(str)"
+        @click="searchs"
       />
     </div>
 
     <!-- 轮播图 -->
-    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="transparent">
+    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="transparent" @click="swiper">
       <van-swipe-item>
-        <img
-          src="http://fdfs.xmcdn.com/storages/e6f1-audiofreehighqps/E2/BA/GMCoOSAHjVI3AAJDaQHpJk0H.jpg"
-          alt=""
-        />
+        <img src="http://fdfs.xmcdn.com/storages/e6f1-audiofreehighqps/E2/BA/GMCoOSAHjVI3AAJDaQHpJk0H.jpg" alt="" />
       </van-swipe-item>
       <van-swipe-item>
-        <img
-          src="http://fdfs.xmcdn.com/storages/e6f1-audiofreehighqps/E2/BA/GMCoOSAHjVI3AAJDaQHpJk0H.jpg"
-          alt=""
-        />
+        <img src="http://fdfs.xmcdn.com/storages/e6f1-audiofreehighqps/E2/BA/GMCoOSAHjVI3AAJDaQHpJk0H.jpg" alt="" />
       </van-swipe-item>
       <van-swipe-item>
-        <img
-          src="http://fdfs.xmcdn.com/storages/e6f1-audiofreehighqps/E2/BA/GMCoOSAHjVI3AAJDaQHpJk0H.jpg"
-          alt=""
-        />
+        <img src="http://fdfs.xmcdn.com/storages/e6f1-audiofreehighqps/E2/BA/GMCoOSAHjVI3AAJDaQHpJk0H.jpg" alt="" />
       </van-swipe-item>
     </van-swipe>
 
     <!-- 导航栏 -->
     <div class="nav">
-      <a class="nav-list" href="javascript:;">
-        <img
-          src="https://fdfs.xmcdn.com/group56/M09/3B/BD/wKgLgFyQujLCAVYRAAAuwA7DZMg198.png"
-          alt=""
-        />
+      <router-link to="../rank" class="nav-list" href="javascript:;">
+        <img src="https://fdfs.xmcdn.com/group56/M09/3B/BD/wKgLgFyQujLCAVYRAAAuwA7DZMg198.png" alt="" />
         <text>排行榜</text>
-      </a>
-      <a class="nav-list" href="javascript:;">
-        <img
-          src="https://fdfs.xmcdn.com/group60/M02/18/F4/wKgLeVziZxHRlc-lAAAO9ZkPU-I489.png"
-          alt=""
-        />
+      </router-link>
+      <router-link to="../category" class="nav-list" href="javascript:;">
+        <img src="https://fdfs.xmcdn.com/group60/M02/18/F4/wKgLeVziZxHRlc-lAAAO9ZkPU-I489.png" alt="" />
         <text>分类</text>
-      </a>
-      <a class="nav-list" href="javascript:;">
-        <img
-          src="https://fdfs.xmcdn.com/group57/M0A/3B/D0/wKgLgVyQuqWRZsJtAAAnr8tg4rs307.png"
-          alt=""
-        />
+      </router-link>
+      <router-link to="../listen" class="nav-list" href="javascript:;">
+        <img src="https://fdfs.xmcdn.com/group57/M0A/3B/D0/wKgLgVyQuqWRZsJtAAAnr8tg4rs307.png" alt="" />
         <text>电台</text>
-      </a>
+      </router-link>
     </div>
 
     <!-- 广告 -->
-    <a class="advertising" href="javascript:;">
-      <img
-        src="//imagev2.xmcdn.com/group61/M0A/CD/B2/wKgMZl0W1legiUgkAACPrBBFcJ4381.png"
-        alt=""
-      />
-    </a>
+    <router-link to="../login" class="advertising" href="javascript:;">
+      <img src="//imagev2.xmcdn.com/group61/M0A/CD/B2/wKgMZl0W1legiUgkAACPrBBFcJ4381.png" alt="" />
+    </router-link>
 
     <!-- 新人必听 -->
     <div class="listens-title">新人必听</div>
     <div class="listens w">
-      <Listens
-        v-for="item in listens"
-        :key="item.albumId"
-        :item="item"
-        marking="ting"
-        @click="listener(item.albumId)"
-      ></Listens>
+      <Listens v-for="item in listens" :key="item.albumId" :item="item" marking="ting" @click="listener(item.albumId)">
+      </Listens>
     </div>
 
     <!-- 限时免费 -->
@@ -90,11 +64,7 @@
     <div class="time-list">
       <!-- 限时免费轮播图 -->
       <van-swipe :loop="false" indicator-color="transparent" :width="125">
-        <van-swipe-item
-          v-for="item in limitDatas"
-          :key="item.id"
-          @click="free(item.id)"
-        >
+        <van-swipe-item v-for="item in limitDatas" :key="item.id" @click="free(item.id)">
           <Listens :info="item" marking="xian"></Listens>
         </van-swipe-item>
       </van-swipe>
@@ -103,32 +73,20 @@
     <!-- 今日热点 -->
     <div class="listens-title">今日热点</div>
     <div class="hot w">
-      <HotList
-        :type="true"
-        v-for="item in hotDatas"
-        :key="item.albumId"
-        :item="item"
-        @click="hots(item.albumId)"
-      ></HotList>
+      <HotList :type="true" v-for="item in hotDatas" :key="item.albumId" :item="item" @click="hots(item.albumId)">
+      </HotList>
     </div>
 
     <!-- 博客推荐 -->
     <div class="listens-title">博客推荐</div>
     <div class="blog w">
-      <HotList
-        :type="false"
-        v-for="item in hotDatas"
-        :key="item.albumId"
-        :item="item"
-      ></HotList>
+      <HotList :type="false" v-for="item in hotDatas" :key="item.albumId" :item="item"></HotList>
     </div>
 
     <!-- 底部 -->
     <div class="foot">
-      <img
-        src="https://imagev2.xmcdn.com/storages/3777-audiofreehighqps/49/07/GMCoOSMH3Kb7AAAPQgH_va2X.png!magick=webp"
-        alt=""
-      />
+      <img src="https://imagev2.xmcdn.com/storages/3777-audiofreehighqps/49/07/GMCoOSMH3Kb7AAAPQgH_va2X.png!magick=webp"
+        alt="" />
       <p>© 2014-2024 喜马拉雅 版权所有</p>
     </div>
   </div>
@@ -159,29 +117,35 @@ const hotDatas = ref();
 //搜索双向数据绑定
 const str = ref("");
 
+//轮播图跳转登录页
+const swiper = () => {
+  router.push("../login");
+};
+
 //登录跳转
 const toLogin = () => {
-  router.push("../search");
+  router.push("../login");
 };
 
 //搜索跳转
-const searchs = (str: string) => {
-  router.push(`../search?value=${str}`);
+const searchs = () => {
+  router.push(`../search`);
 };
+
 
 //新人必听跳转
 const listener = (id: string) => {
-  router.push(`../listen?id=${id}`);
+  router.push(`../detail/${id}`);
 };
 
 //限时免费跳转
 const free = (id: string) => {
-  router.push(`../rank?id=${id}`);
+  router.push(`../detail/${id}`);
 };
 
 //今日热点跳转
 const hots = (id: string) => {
-  router.push(`../rank?id=${id}`);
+  router.push(`../detail/${id}`);
 };
 
 //新人必听 发请求获取数据
@@ -195,7 +159,7 @@ const findListen = async () => {
   }
 };
 
-//限时免费 今日热点  
+//限时免费 今日热点
 const findLimitOrHot = async () => {
   try {
     const result = await home.getLimitOrHot();
@@ -209,7 +173,7 @@ const findLimitOrHot = async () => {
 };
 
 // 倒计时
-const endTime = new Date("2024-02-26 17:00:00").getTime(); //倒计时结束时间
+const endTime = new Date("2024-02-27 24:00:00").getTime(); //倒计时结束时间
 const countdown = ref(Math.round((endTime - Date.now()) / 1000)); //初始化剩余时间
 const countdownDisplay = computed(() => {
   const hours = Math.floor((countdown.value % 86400) / 3600);
@@ -239,19 +203,23 @@ onMounted(() => {
   width: 96%;
   margin: 0 auto;
 }
+
 .container {
   height: 100%;
   width: 100%;
+
   .search {
     box-sizing: border-box;
     background-color: #eff1f4;
     height: 30px;
     display: flex;
     border-radius: 20px;
+
     .van-icon {
       font-size: 18px;
       margin: 7px 5px 0 5px;
     }
+
     input {
       width: 80%;
       font-size: 12px;
@@ -266,12 +234,15 @@ onMounted(() => {
     height: 100%;
     width: 98%;
     margin: 10px auto 0;
+
     .van-swipe__track {
       display: flex;
       width: 100%;
+
       .van-swipe-item {
         width: 100%;
         text-align: center;
+
         img {
           width: 332px;
           height: 130px;
@@ -287,15 +258,18 @@ onMounted(() => {
     margin: 20px auto 15px;
     display: flex;
     justify-content: space-around;
+
     .nav-list {
       display: inline-block;
       display: flex;
       flex-direction: column;
       align-items: center;
+
       img {
         width: 34px;
         height: 34px;
       }
+
       text {
         font-size: 12px;
         color: #666;
@@ -308,6 +282,7 @@ onMounted(() => {
     width: 100%;
     height: 89px;
     display: block;
+
     img {
       width: 100%;
       height: 100%;
@@ -329,6 +304,7 @@ onMounted(() => {
     padding: 5px;
     flex-wrap: wrap;
     box-sizing: border-box;
+
     &::after {
       content: "";
       width: 115px;
@@ -337,6 +313,7 @@ onMounted(() => {
 
   .time {
     display: flex;
+
     .timeLimit {
       width: 96px;
       height: 25px;
@@ -361,6 +338,7 @@ onMounted(() => {
       width: 120px;
       height: 30px;
     }
+
     p {
       color: gray;
       font-size: 13px;
@@ -369,4 +347,3 @@ onMounted(() => {
   }
 }
 </style>
- 

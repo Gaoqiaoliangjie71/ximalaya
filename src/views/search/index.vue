@@ -49,7 +49,7 @@ export default {
 import router from "@/router"
 import { ref, onMounted } from 'vue'
 // import { showToast } from 'vant';
-import BetterScroll from 'better-scroll'
+// import BetterScroll from 'better-scroll'
 import searchApi from '@/api/search'
 import type { HotWordData, keySonr } from '@/api/search'
 

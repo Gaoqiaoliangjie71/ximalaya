@@ -6,6 +6,7 @@ import App from './App.vue'
 import ElementPlus from 'element-plus';
 import Vant from 'vant';
 import 'element-plus/dist/index.css';
+
 // import Vant from 'vant';
 //头部组件
 import Header from './components/header/index.vue'
