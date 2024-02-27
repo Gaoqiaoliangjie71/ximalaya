@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <!-- 搜索组件是单独的，不用form表单包括，除非有多个条件搜索 -->
-    <van-search v-model="kw" show-action placeholder="请输入搜索关键词" @update:model-value="onSearch" />
+    <van-search v-model="kw" show-action placeholder="请输入搜索关键词"  @update:model-value="onSearch" />
     <!-- 因为这里有判断，所以kw就是kwywords关键词，不能省略声明变量 -->
     <van-tabs v-if="!kw" v-model:active="active" @click-tab="clickToGet">
       <div class="wrapper">
         <van-tab :name="item.categoryId" v-for="(item, index) in categoryList" :key="item.categoryId"
-          :title="item.categoryName">
+          :title="item.categoryName" @click="tolist">
           <!-- <ul>ll</ul>  内容{{ index + 1 }} -->
           <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
             <van-cell v-for="(item, index) in category1List" :key="item.category1List" :title="item.word">
@@ -46,6 +46,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
+import router from "@/router"
 import { ref, onMounted } from 'vue'
 // import { showToast } from 'vant';
 import BetterScroll from 'better-scroll'
@@ -54,6 +55,11 @@ import type { HotWordData, keySonr } from '@/api/search'
 
 
 onMounted(() => {
+  // const value = router.currentRoute.value.query.value
+  console.log(router.currentRoute.value.query.value);
+
+  // console.log(router);
+
   getHotWord()
   //better-scroll
   new BetterScroll('.wrapper', {
@@ -108,7 +114,7 @@ const onLoad = () => {
         isUp: i % 2 === 0 ? true : false
       });
     }
-// 搜索列表 Search list
+    // 搜索列表 Search list
     // 加载状态结束
     loading.value = false;
 
@@ -118,6 +124,12 @@ const onLoad = () => {
     }
   }, 1000);
 };
+
+// 去搜索详情页
+function tolist() {
+  router.push("../searchList")
+}
+
 
 
 function clickToGet({ name }: { name: number }) {

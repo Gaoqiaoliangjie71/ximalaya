@@ -11,69 +11,51 @@
     </div>
 
     <!-- Tab 标签页-->
-    <van-tabs v-model:active="activeName">
-      <van-tab title="全部"></van-tab>
-      <van-tab title="专辑"></van-tab>
-      <van-tab title="声音"></van-tab>
-      <van-tab title="主播"></van-tab>
-    </van-tabs>
+    <van-tabs v-model:active="activeName" @click-tab="onClickTab">
+      <van-tab title="全部">
+        <!--主播  -->
+        <div>
+          <!--Popup 弹出层  -->
+          <van-cell title="‘米小圈’相关的主播" is-link @click="showPopup" />
+          <van-popup v-model:show="show" :style="{ padding: '64px' }">
+            内容
+          </van-popup>
 
-    <!--主播  -->
-    <div>
-      <!--Popup 弹出层  -->
-      <van-cell title="‘米小圈’相关的主播" is-link @click="showPopup" />
-      <van-popup v-model:show="show" :style="{ padding: '64px' }">
-        内容
-      </van-popup>
-
-      <!--  -->
-      <ul class="userList _wJ">
-        <a class="userItem _wJ" href="/zhubo/68394601">
+          <!--  -->
+          <ul class="userList _wJ">
+            <!-- <a  class="userItem _wJ" href="/zhubo/68394601">
           <img class="anchorImage"
             src="http://imagev2.xmcdn.com/group76/M01/43/4C/wKgO3l5cYSaS5So6AADlDJbMOgU364.jpg!op_type=3&amp;columns=140&amp;rows=140&amp;magick=webp">
           <div class="keepToTheRight">
             <p class="mixiaoquang">米小圈</p>
             <p class="ketang"><i class="xm-icon icon-user"></i>&nbsp;712.01万</p>
           </div>
-        </a><a class="userItem _wJ" href="/zhubo/204618617"><img class="anchorImage"
-            src="http://imagev2.xmcdn.com/group84/M0A/46/E5/wKg5Hl7godqgfkziAAD6IGosZk841.jpeg!op_type=3&amp;columns=140&amp;rows=140&amp;magick=webp">
-          <div class="keepToTheRight">
-            <p class="mixiaoquang">米小圈学堂</p>
-            <p class="ketang"><i class="xm-icon icon-user"></i>&nbsp;16.41万</p>
-          </div>
-        </a><a class="userItem _wJ" href="/zhubo/130698896"><img class="anchorImage"
-            src="http://imagev2.xmcdn.com/storages/a010-audiofreehighqps/BA/E3/GKwRINsGgx6cAAPoKQFtIsOZ.jpg!op_type=3&amp;columns=140&amp;rows=140&amp;magick=webp">
-          <div class="keepToTheRight">
-            <p class="mixiaoquang">米小圈的真真真真爱粉</p>
-            <p class="ketang"><i class="xm-icon icon-user"></i>&nbsp;1773</p>
-          </div>
-        </a><a class="userItem _wJ" href="/zhubo/338991720"><img class="anchorImage"
-            src="//imagev2.xmcdn.com/group61/M01/57/F1/wKgMcF1D2W-S6tE2AAADUIJ3rgc368.png">
-          <div class="keepToTheRight">
-            <p class="mixiaoquang">吾乃米小圈的老粉丝</p>
-            <p class="ketang"><i class="xm-icon icon-user"></i>&nbsp;952</p>
-          </div>
-        </a><a class="userItem _wJ" href="/zhubo/159752488"><img class="anchorImage"
-            src="//imagev2.xmcdn.com/group61/M01/57/F1/wKgMcF1D2W-S6tE2AAADUIJ3rgc368.png">
-          <div class="keepToTheRight">
-            <p class="mixiaoquang">米小圈另一版本</p>
-            <p class="ketang"><i class="xm-icon icon-user"></i>&nbsp;5350</p>
-          </div>
-        </a>
-      </ul>
-    </div>
+        </a> -->
+            <!-- 循环主播数据 -->
+            <a v-for="(user, index) in userViews" :key="user.userInfo.uid" class="userItem _wJ" href="/zhubo/68394601">
+              <img class="anchorImage" :src="user.userInfo.smallPic">
+              <div class="keepToTheRight">
+                <p class="mixiaoquang">{{ user.userInfo.nickname }}</p>
+                <p class="ketang">
+                  <i class="xm-icon icon-user"></i>
+                  &nbsp;{{ convertNumber(user.userInfo.followers_counts) }}
+                </p>
+              </div>
+            </a>
+          </ul>
+        </div>
 
-    <!--专辑  -->
-    <div>
-      <!--Popup 弹出层  -->
-      <van-cell title="‘米小圈’相关的专辑 " is-link @click="showPopup" />
-      <van-popup v-model:show="show" :style="{ padding: '64px' }">
-        专辑
-      </van-popup>
-      <ul class=" _wJ">
-        <li class="resultItem _wJ">
-          <div class="itemWrapper _wJ"><a href="/album/6233693">
-              <div class="xm-album ">
+        <!--专辑  -->
+        <div>
+          <!--Popup 弹出层  -->
+          <van-cell title="‘米小圈’相关的专辑 " is-link @click="showPopup" />
+          <van-popup v-model:show="show" :style="{ padding: '64px' }">
+            专辑
+          </van-popup>
+          <ul class=" _wJ">
+            <li class="resultItem _wJ">
+              <div class="itemWrapper _wJ"><a href="/album/6233693">
+                  <!-- <div class="xm-album ">
                 <div class="xm-album-cover rel cover cover _cC UX_" style="width: 70px; height: 70px;">
                   <img class="albumPictures" key=""
                     src="http://imagev2.xmcdn.com/group47/M0A/9C/59/wKgKk1tYNLzyfxrAAAIVC-YGMlU958.jpg!op_type=3&amp;columns=290&amp;rows=290&amp;magick=webp">
@@ -81,8 +63,8 @@
                     <div class="mask UX_"></div>
                     <div class="play-btn UX_"></div>
                   </div>
-                </div>
-                <div class="content _cC"
+                </div> -->
+                  <!-- <div class="content _cC"
                   style="display: flex; flex-flow: row; justify-content: space-between; align-items: center;">
                   <div class="_cC">
                     <h3 class="xm-album__title" style="color: rgb(51, 51, 51);">米小圈上学记:一二三年级 |
@@ -95,44 +77,187 @@
                           class="xm-icon icon-sound"></i>&nbsp; 282</span><span class="count _cC"><i
                           class="xm-icon icon-data"></i>&nbsp; 71.03亿</span></div>
                   </div>
+                </div> -->
+                  <div class="xm-album" v-for="album in albumViews" :key="album.albumInfo.uid">
+                    <div class="xm-album-cover rel cover cover _cC UX_" style="width: 70px; height: 70px;">
+                      <img class="albumPictures" :src="album.albumInfo.cover_path">
+                      <div class="xm-album-cover__wrap UX_">
+                        <div class="mask UX_"></div>
+                        <div class="play-btn UX_"></div>
+                      </div>
+                    </div>
+
+                    <div class="content _cC"
+                      style="display: flex; flex-flow: row; justify-content: space-between; align-items: center;">
+                      <div class="_cC">
+                        <h3 class="xm-album__titlee" style="color: rgb(51, 51, 51);">
+                          {{ album.albumInfo.title }}&nbsp;
+                        </h3>
+                        <p class="xm-album__subtitle">
+                          {{ album.albumInfo.tags }}
+                        </p>
+                        <div class="xm-album__info"><span class="user-channel ellipsis-1 _cC"><i
+                              class="xm-icon icon-user"></i>&nbsp; {{ album.albumInfo.nickname }}</span><span
+                            class="count _cC"><i class="xm-icon icon-sound"></i>&nbsp; {{ album.albumInfo.tracks
+                            }}</span><span class="count _cC"><i class="xm-icon icon-data"></i>&nbsp; {{
+  convertNumber(album.albumInfo.play)
+}}</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </a></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 声音 -->
+        <div>
+          <!--Popup 弹出层  -->
+          <van-cell title="‘米小圈’相关的声音 " is-link @click="showPopup" />
+          <van-popup v-model:show="show" :style="{ padding: '64px' }">
+            声音
+          </van-popup>
+
+          <!-- 相关的声音 -->
+          <div class="hot-l w">
+            <a href="javascript:;" class="hot-list" v-for="(track, index) in trackViews"
+              :key="track.trackInfo.category_id">
+              <div class="image">
+                <img :src="track.trackInfo.album_cover_path" />
+                <div class="mask">
+                  <van-icon name="play" size="20" />
                 </div>
               </div>
-            </a></div>
-        </li>
-      </ul>
-    </div>
+              <div class="_cC">
+                <h3 class="xm-album__title" style="color: rgb(51, 51, 51);">{{ track.trackInfo.title
+                }}&nbsp;
+                </h3>
+                <p class="xm-album__subtitle c9 _cC">{{ track.trackInfo.recommend_reason }}</p>
+                <div class="xm-album__info c9 _cC"><span class="user-channel ellipsis-1 _cC"><i
+                      class="xm-icon icon-user"></i>&nbsp; {{ track.trackInfo.nickname }}</span><span class="count _cC"><i
+                      class="xm-icon icon-sound"></i>&nbsp; {{ track.trackInfo.duration }}</span><span
+                    class="count _cC"><i class="xm-icon icon-data"></i>&nbsp; {{ track.trackInfo.count_play }}</span>
+                </div>
+              </div>
+            </a>
+            <div class="line"></div>
+          </div>
+        </div>
+      </van-tab>
+      <van-tab title="专辑">
+        <ul class=" _wJ">
+          <li class="resultItem _wJ">
+            <div class="itemWrapper _wJ"><a href="/album/6233693">
+                <!-- <div class="xm-album ">
+                <div class="xm-album-cover rel cover cover _cC UX_" style="width: 70px; height: 70px;">
+                  <img class="albumPictures" key=""
+                    src="http://imagev2.xmcdn.com/group47/M0A/9C/59/wKgKk1tYNLzyfxrAAAIVC-YGMlU958.jpg!op_type=3&amp;columns=290&amp;rows=290&amp;magick=webp">
+                  <div class="xm-album-cover__wrap UX_">
+                    <div class="mask UX_"></div>
+                    <div class="play-btn UX_"></div>
+                  </div>
+                </div> -->
+                <!-- <div class="content _cC"
+                  style="display: flex; flex-flow: row; justify-content: space-between; align-items: center;">
+                  <div class="_cC">
+                    <h3 class="xm-album__title" style="color: rgb(51, 51, 51);">米小圈上学记:一二三年级 |
+                      畅销出版物&nbsp; </h3>
+                    <p class="xm-album__subtitle">
+                      上学趣事一箩筐，轻松搞定写日记！affjlg防水科技风扇电机开了个老顾客打开过考虑到高科技大家离开轨顶风道科技馆开了个店发了个考虑到设计费可好看了考虑肯定是付款计划考虑圣诞快乐很费劲看来是货到付款拉个领导看见回来看就开了格局啊感觉快进到佛冈看到过看到了看过第几个考虑机构贷款拉菲离开家阿哥
+                    </p>
+                    <div class="xm-album__info"><span class="user-channel ellipsis-1 _cC"><i
+                          class="xm-icon icon-user"></i>&nbsp; 米小圈</span><span class="count _cC"><i
+                          class="xm-icon icon-sound"></i>&nbsp; 282</span><span class="count _cC"><i
+                          class="xm-icon icon-data"></i>&nbsp; 71.03亿</span></div>
+                  </div>
+                </div> -->
+                <div class="xm-album" v-for="album in albumViews" :key="album.albumInfo.uid">
+                  <div class="xm-album-cover rel cover cover _cC UX_" style="width: 70px; height: 70px;">
+                    <img class="albumPictures" :src="album.albumInfo.cover_path">
+                    <div class="xm-album-cover__wrap UX_">
+                      <div class="mask UX_"></div>
+                      <div class="play-btn UX_"></div>
+                    </div>
+                  </div>
 
-    <!-- 声音 -->
-    <div>
-      <!--Popup 弹出层  -->
-      <van-cell title="‘米小圈’相关的声音 " is-link @click="showPopup" />
-      <van-popup v-model:show="show" :style="{ padding: '64px' }">
-        声音
-      </van-popup>
-
-      <!-- 相关的声音 -->
-      <div class="hot-l w">
-        <a href="javascript:;" class="hot-list">
-          <div class="image">
-            <img
-              src="http://imagev2.xmcdn.com/group47/M0A/9C/59/wKgKk1tYNLzyfxrAAAIVC-YGMlU958.jpg!op_type=3&columns=290&rows=290&magick=webp" />
-            <div class="mask">
-              <van-icon name="play" size="20" />
+                  <div class="content _cC"
+                    style="display: flex; flex-flow: row; justify-content: space-between; align-items: center;">
+                    <div class="_cC">
+                      <h3 class="xm-album__titlee" style="color: rgb(51, 51, 51);">
+                        {{ album.albumInfo.title }}&nbsp;
+                      </h3>
+                      <p class="xm-album__subtitle">
+                        {{ album.albumInfo.tags }}
+                      </p>
+                      <div class="xm-album__info"><span class="user-channel ellipsis-1 _cC"><i
+                            class="xm-icon icon-user"></i>&nbsp; {{ album.albumInfo.nickname }}</span><span
+                          class="count _cC"><i class="xm-icon icon-sound"></i>&nbsp; {{ album.albumInfo.tracks
+                          }}</span><span class="count _cC"><i class="xm-icon icon-data"></i>&nbsp; {{
+  convertNumber(album.albumInfo.play)
+}}</span></div>
+                    </div>
+                  </div>
+                </div>
+              </a></div>
+          </li>
+        </ul>
+      </van-tab>
+      <van-tab title="声音">
+        <div class="hot-l w">
+          <a href="javascript:;" class="hot-list" v-for="(track, index) in trackViews" :key="track.trackInfo.category_id">
+            <div class="image">
+              <img :src="track.trackInfo.album_cover_path" />
+              <div class="mask">
+                <van-icon name="play" size="20" />
+              </div>
             </div>
+            <div class="_cC">
+              <h3 class="xm-album__title" style="color: rgb(51, 51, 51);">{{ track.trackInfo.title
+              }}&nbsp;
+              </h3>
+              <p class="xm-album__subtitle c9 _cC">{{ track.trackInfo.recommend_reason }}</p>
+              <div class="xm-album__info c9 _cC"><span class="user-channel ellipsis-1 _cC"><i
+                    class="xm-icon icon-user"></i>&nbsp; {{ track.trackInfo.nickname }}</span><span class="count _cC"><i
+                    class="xm-icon icon-sound"></i>&nbsp; {{ track.trackInfo.duration }}</span><span class="count _cC"><i
+                    class="xm-icon icon-data"></i>&nbsp; {{ track.trackInfo.count_play }}</span>
+              </div>
+            </div>
+          </a>
+          <div class="line"></div>
+        </div>
+      </van-tab>
+      <van-tab title="主播">
+
+
+        <div class="wz">
+          <ul class="userList _ww">
+            <!-- <a  class="userItem _wJ" href="/zhubo/68394601">
+          <img class="anchorImage"
+            src="http://imagev2.xmcdn.com/group76/M01/43/4C/wKgO3l5cYSaS5So6AADlDJbMOgU364.jpg!op_type=3&amp;columns=140&amp;rows=140&amp;magick=webp">
+          <div class="keepToTheRight">
+            <p class="mixiaoquang">米小圈</p>
+            <p class="ketang"><i class="xm-icon icon-user"></i>&nbsp;712.01万</p>
           </div>
-          <div class="_cC">
-            <h3 class="xm-album__title txt-1 ellipsis _cC" style="color: rgb(51, 51, 51);">米小圈上学记:一二三年级 | 畅销出版物&nbsp;
-            </h3>
-            <p class="xm-album__subtitle c9 _cC">上学趣事一箩筐，轻松搞定写日记！</p>
-            <div class="xm-album__info c9 _cC"><span class="user-channel ellipsis-1 _cC"><i
-                  class="xm-icon icon-user"></i>&nbsp; 米小圈</span><span class="count _cC"><i
-                  class="xm-icon icon-sound"></i>&nbsp; 282</span><span class="count _cC"><i
-                  class="xm-icon icon-data"></i>&nbsp; 71.03亿</span></div>
-          </div>
-        </a>
-        <div class="line"></div>
-      </div>
-    </div>
+        </a> -->
+            <!-- 循环主播数据 -->
+            <a v-for="(user, index) in userViews" :key="user.userInfo.uid" class="userItem _ww" href="/zhubo/68394601">
+              <img class="anchorImage" :src="user.userInfo.smallPic">
+              <div class="keepToTheRight">
+                <p class="mixiaoquang">{{ user.userInfo.nickname }}</p>
+                <p class="ketang">
+                  <i class="xm-icon icon-user"></i>
+                  &nbsp;{{ convertNumber(user.userInfo.followers_counts) }}
+                </p>
+              </div>
+            </a>
+          </ul>
+        </div>
+
+
+      </van-tab>
+    </van-tabs>
+
+
 
   </div>
 </template>
@@ -159,9 +284,14 @@ const show = ref(false);
 const kw = ref()
 const core = ref()
 const category3List = ref<albumlist[]>([])
+const searchInfo = ref<any>({})
 const showPopup = () => {
   show.value = true;
 };
+
+
+
+
 const app = createApp();
 app.use(Tab);
 app.use(Tabs);
@@ -189,18 +319,75 @@ const props = defineProps<{
 onMounted(() => {
   getList()
 })
-const page = 5;
-const rows = 5;
+const page = ref(1);
+const rows = ref(5);
+
+//全部
+const all = ref(true)
+//  1 专辑 2 声音 3 主播
+const type = ref(1)
+
+function onClickTab({ title }: { title: string }) {
+  console.log(title);
+
+  if (title = '全部') {
+    all.value = true
+  }
+
+  if (title = "专辑") {
+    all.value = false
+    type.value = 1
+  }
+  if (title = "声音") {
+    all.value = false
+    type.value = 2
+  }
+  if (title = "主播") {
+    all.value = false
+    type.value = 3
+  }
+
+}
+
 
 // 获取请求实例的函数
+// 这个接口就是获取了哪个大量数据的接口吗？是
+// 嗯嗯， 区分一下数据就好了
+
+// 将数字转化为万、亿
+const convertNumber = (num: number) => {
+  if (num >= 10000 && num < 99995000) { // 判断是否大于等于十万小于九百五十万
+    return (num / 10000).toFixed(2) + '万';
+  } else if (num >= 100000000 && num < 99995000000) { // 判断是否大于等于千万小于九百五十亿
+    return (num / 100000000).toFixed(2) + '亿';
+  } else if (num >= 1000000000000) { // 判断是否大于等于万亿
+    return (num / 1000000000000).toFixed(2) + '万亿';
+  } else {
+    return num;
+  }
+}
+
+// 示例调用
+// console.log(convertNumber(2345678)); // 输出 "234.57万"
+// console.log(convertNumber(123456789)); // 输出 "123.46亿"
+// console.log(convertNumber(987654321000)); // 输出 "98.77万亿"
+
+const userViews = ref<any>([]); // 主播
+const albumViews = ref<any>([]); // 专辑
+const trackViews = ref<any>([]); // 声音
 function getList() {
   try {
-    searchApi.findCategory4List({ kw: '米小圈', core: 'all', page, rows }).then((result: any) => {
+    searchApi.findCategory4List({ kw: '米小圈', core: 'all', page: page.value, rows: rows.value }).then((result: any) => {
 
-      console.log(result);
-      category3List.value=result.data.
+      //category3List.value=result.data.
       // category3List.value = result.
-      console.log(result.data);
+      // searchInfo.value = result.data
+      // 米小圈相关的主播的数据
+      userViews.value = result.data.userViews.users;
+      // 米小圈相关的专辑的数据
+      albumViews.value = result.data.albumViews.albums;
+      // 米小圈相关的声音的数据
+      trackViews.value = result.data.trackViews.tracks;
     })
   } catch (error) {
     console.log(error);
@@ -294,6 +481,22 @@ function getList() {
 
   }
 
+
+
+  .userList _ww {
+
+    display: flex;
+
+    .userItem _ww {
+      display: flex;
+    }
+    .anchorImage{
+      width: 30px;
+    }
+  }
+
+
+
   .userItem._wJ {
     -ms-flex-negative: 0;
     flex-shrink: 0;
@@ -370,17 +573,32 @@ function getList() {
   }
 
 
-
-
   .xm-album__title {
+    color: #333;
+    font-size: 13px;
+    line-height: 1.38;
+    margin-top: -1px;
+    margin: 7px;
+    width: 250px;
+    // overflow: hidden; //超出隐藏
+    -webkit-line-clamp: 2; //两行排列
+    // white-space: nowrap;
+    // text-overflow: ellipsis; // 单行文本溢出使用省略号代替
+    // white-space: nowrap;   
+  }
+
+  .xm-album__titlee {
     color: rgb(51, 51, 51);
     font-size: 16px;
     line-height: 1.38;
-    overflow: hidden;
-    white-space: nowrap;
-    // text-overflow: ellipsis;
-    // margin-top: -1px;
+    margin-top: -1px;
     margin: 1px 0 7px;
+
+    overflow: hidden; //超出隐藏
+    //  -webkit-line-clamp: 2;//两行排列
+    white-space: nowrap;
+    text-overflow: ellipsis; // 单行文本溢出使用省略号代替
+    // white-space: nowrap;
   }
 
   .xm-album .cover._cC {
@@ -401,6 +619,7 @@ function getList() {
   max-width: 100%;
   border: none;
   font-size: 10px;
+
 }
 
 .xm-album__subtitle {
@@ -438,6 +657,7 @@ function getList() {
   font-size: 100%;
   vertical-align: baseline;
 }
+
 
 .resultItem._wJ {
   display: -webkit-box;
@@ -531,8 +751,8 @@ function getList() {
 
     .image {
       position: relative;
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
 
       // padding-right: 20px;
       // border-radius: 50%;
