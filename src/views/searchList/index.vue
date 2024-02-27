@@ -490,7 +490,8 @@ function getList() {
     .userItem _ww {
       display: flex;
     }
-    .anchorImage{
+
+    .anchorImage {
       width: 30px;
     }
   }

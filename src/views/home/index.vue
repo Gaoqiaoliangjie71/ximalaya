@@ -203,7 +203,6 @@ onMounted(() => {
   width: 96%;
   margin: 0 auto;
 }
-
 .container {
   height: 100%;
   width: 100%;
