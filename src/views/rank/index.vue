@@ -1,14 +1,15 @@
 <template>
   <div class="rank">
     <van-tabs v-model:active="active" sticky>
-      <van-tab v-for="item in tabLists" :id="item.id" :title="item.name">
+      <van-tab v-for="item in tabLists" :key="item.id" :title="item.name">
         <div class="tab_content">
           <div class="left">
             <van-sidebar v-model="actt">
               <van-sidebar-item
                 v-for="item2 in item.tabWraps"
-                :id="item2.id"
+                :key="item2.id"
                 :title="item2.name"
+                @click="changeRankingId(item2)"
               >
               </van-sidebar-item>
             </van-sidebar>
@@ -17,26 +18,28 @@
             <div class="categoryList">
               <div
                 v-for="item3 in rankListData.rankList"
-                :id="item3.id"
+                :key="item3.id"
                 class="categoryItem"
               >
-                <div class="categoryItem-content">
-                  <img :src="`http://fdfs.xmcdn.com/${item3.cover}`" alt="" />
-                  <div class="article-description">
-                    <div class="title">
-                      {{ item3.albumTitle }}
-                    </div>
-                    <div class="data-message">
-                      <div class="play-message">
-                        <van-icon name="play-circle-o" />
-                        <div class="play-counts">{{ item3.playCount }}</div>
+                <router-link :to="{ path: '/detail', query: { id: item3.id } }"
+                  ><div class="categoryItem-content">
+                    <img :src="`http://fdfs.xmcdn.com/${item3.cover}`" alt="" />
+                    <div class="article-description">
+                      <div class="title">
+                        {{ item3.albumTitle }}
                       </div>
-                      <div class="update-time">
-                        {{ item3.lastUptrackAtStr }}更新
+                      <div class="data-message">
+                        <div class="play-message">
+                          <van-icon name="play-circle-o" />
+                          <div class="play-counts">{{ item3.playCount }}</div>
+                        </div>
+                        <div class="update-time">
+                          {{ item3.lastUptrackAtStr }}更新
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </div></router-link
+                >
               </div>
             </div>
           </div>
@@ -60,16 +63,20 @@ const rankStore = useRankStore();
 const active = ref(0);
 const actt = ref(0);
 
-const { tabLists, rankListData, rankingId } = storeToRefs(rankStore);
+const { tabLists, rankListData } = storeToRefs(rankStore);
 onMounted(() => {
   rankStore.getTabLists();
   rankStore.getRankListData();
+  // console.log(rankingId);
 
   // console.log(tabLists);
 });
-// const changeRankingId = (rankingid: number) => {
-//   rankingId = rankingid;
-// };
+const changeRankingId = (item: any) => {
+  // console.log(tabLists);
+  // console.log(item.rankingId);
+  rankStore.getRankListData(item.rankingId);
+  // rankingId = item.rankingId;
+};
 </script>
 
 <style lang="less" scoped>
@@ -98,7 +105,7 @@ onMounted(() => {
       align-items: center;
       width: 100%;
       height: 80px;
-      border: 1px solid red;
+      border-bottom: 1px solid #a3a3ac;
       img {
         margin-left: 8px;
         border-radius: 4px;
@@ -117,9 +124,13 @@ onMounted(() => {
           font-weight: 600;
           // border: 2px solid blue  .data-message {
           font-size: 12px;
-          color: #999;
           display: flex;
           // border: 1px solid red;
+        }
+        .data-message {
+          display: flex;
+          color: #999;
+          font-size: 12px;
           .play-message {
             display: flex;
             align-items: center;
