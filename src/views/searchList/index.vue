@@ -6,7 +6,7 @@
         <!-- <img class="home-logo W_l" src="https://imagev2.xmcdn.com/storages/3777-audiofreehighqps/49/07/GMCoOSMH3Kb7AAAPQgH_va2X.png"> -->
         <img class="image" src="../../assets/imge.png" alt="">
       </div>
-      <van-search show-action v-model="value" placeholder="请输入搜索关键词" @update:model-value="onSearch" />
+      <van-search @click="tosearch" show-action v-model="value" placeholder="请输入搜索关键词" @update:model-value="onSearch" />
       <van-button round type="success">打开APP</van-button>
     </div>
 
@@ -279,7 +279,7 @@ import { createApp } from 'vue';
 import { Tab, Tabs } from 'vant';
 import type { tracklist, userslist, albumlist } from '@/api/search'
 import searchApi from '@/api/search'
-
+import router from "@/router"
 const show = ref(false);
 const kw = ref()
 const core = ref()
@@ -349,6 +349,10 @@ function onClickTab({ title }: { title: string }) {
 
 }
 
+// 点击去搜索页面
+function tosearch() {
+  router.push("../search")
+}
 
 // 获取请求实例的函数
 // 这个接口就是获取了哪个大量数据的接口吗？是

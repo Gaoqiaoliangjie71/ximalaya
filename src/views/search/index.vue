@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 搜索组件是单独的，不用form表单包括，除非有多个条件搜索 -->
-    <van-search v-model="kw" show-action placeholder="请输入搜索关键词"  @update:model-value="onSearch" />
+    <van-search v-model="kw" show-action @cancel="onCancel" placeholder="请输入搜索关键词" @update:model-value="onSearch" />
     <!-- 因为这里有判断，所以kw就是kwywords关键词，不能省略声明变量 -->
     <van-tabs v-if="!kw" v-model:active="active" @click-tab="clickToGet">
       <div class="wrapper">
@@ -62,10 +62,10 @@ onMounted(() => {
 
   getHotWord()
   //better-scroll
-  new BetterScroll('.wrapper', {
-    movable: true,
-    zoom: true
-  })
+  // new BetterScroll('.wrapper', {
+  // movable: true,
+  // zoom: true
+  // })
 })
 const active = ref(0);
 
@@ -156,6 +156,12 @@ function getHotWord() {
   }
 }
 const size = 10;
+
+// 返回首页
+function onCancel(){
+  router.push('../home')
+}
+
 
 // 获取请求实例的函数
 function requestExample() {
