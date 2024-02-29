@@ -7,7 +7,7 @@ import ElementPlus from 'element-plus';
 import Vant from 'vant';
 import 'element-plus/dist/index.css';
 
-import Vant from 'vant';
+// import Vant from 'vant';
 //头部组件
 import Header from './components/header/index.vue'
 //新人必听组件
@@ -23,8 +23,8 @@ app.use(Vant);
 
 //组件
 app.component('Header', Header)
-app.component('Listens',Listens)
-app.component('HotList',HotList)
+app.component('Listens', Listens)
+app.component('HotList', HotList)
 
 app.use(pinia);
 app.use(router);

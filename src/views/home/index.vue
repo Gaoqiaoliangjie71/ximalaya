@@ -6,7 +6,12 @@
     <!-- 搜索栏 -->
     <div class="search w">
       <van-icon name="search" />
-      <input type="text" placeholder="搜索" v-model="str" @change="searchs(str)" />
+      <input
+        type="text"
+        placeholder="搜索"
+        v-model="str"
+        @click="searchs"
+      />
     </div>
 
     <!-- 轮播图 -->
@@ -123,9 +128,10 @@ const toLogin = () => {
 };
 
 //搜索跳转
-const searchs = (str: string) => {
-  router.push(`../search?value=${str}`);
+const searchs = () => {
+  router.push(`../search`);
 };
+
 
 //新人必听跳转
 const listener = (id: string) => {
@@ -167,7 +173,7 @@ const findLimitOrHot = async () => {
 };
 
 // 倒计时
-const endTime = new Date("2024-02-27 17:00:00").getTime(); //倒计时结束时间
+const endTime = new Date("2024-02-27 24:00:00").getTime(); //倒计时结束时间
 const countdown = ref(Math.round((endTime - Date.now()) / 1000)); //初始化剩余时间
 const countdownDisplay = computed(() => {
   const hours = Math.floor((countdown.value % 86400) / 3600);
@@ -197,7 +203,6 @@ onMounted(() => {
   width: 96%;
   margin: 0 auto;
 }
-
 .container {
   height: 100%;
   width: 100%;
