@@ -77,6 +77,7 @@ async function loginHandle() {
     ElMessage({
       message: '请勾选用户协议',
     })
+    return
   }
 
   await login()
